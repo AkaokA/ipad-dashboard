@@ -6,7 +6,10 @@
 // Our variables
 $base-font-family: "adelle-sans-1", "adelle-sans-2", Helvetica, Arial, sans-serif;
 $base-font-size:   				24px;
-$base-line-height: 				1.4;
+$base-line-height: 				1.5;
+
+$large-font-size:         2em;
+$huge-font-size:          8em;
 
 $spacing-unit:     				20px;
 
@@ -22,7 +25,9 @@ $grey-color:       				#828282;
 $grey-color-light:				#eee;
 
 // Width of the content area
-$content-width:    				960px;
+$content-width:   960px;
+
+$tableRowHeight:  120px;
 
 
 /**
@@ -58,7 +63,7 @@ body {
     -webkit-text-size-adjust: 100%;
     
     height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .wrapper {
@@ -70,7 +75,7 @@ body {
 }
 
 h1 {
-	font-size: 48px;
+	font-size: $large-font-size;
 	font-weight: 600;
 	line-height: 2;
 }
@@ -78,11 +83,11 @@ h1 {
 $header-height: 584px;
 
 header {
-	position: fixed;
+	position: absolute;
 	z-index: 0;
 	height: $header-height;
 	width: 100%;
-	padding-top: $spacing-unit * 6;
+	padding-top: $spacing-unit * 10;
 	text-align: center;
 	
 	p {
@@ -90,10 +95,20 @@ header {
 	}
 }
 
+.timeAndWeatherWidget {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  
+  .timeDisplay {
+    font-size: $huge-font-size;
+  }
+}
+
 .nextBusWidget {
-	position: relative;
-	z-index: 1000;
-	margin-top: $header-height;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
 	background-color: $background-color-light;
 	-webkit-font-feature-settings: "tnum";
   font-feature-settings: "tnum";
@@ -110,11 +125,9 @@ header {
 	  color: $text-color;
 	  @extend %clearfix;
   }
-
-  $tableRowHeight: 120px;
   
   .nextBusTable {
-	  height: $tableRowHeight * 5;
+	  height: $tableRowHeight * 3;
 	  overflow: hidden;
   }
   
@@ -122,7 +135,7 @@ header {
 	  position: relative;
 	  width: 100%;
 	  height: $tableRowHeight;
-	  font-size: 48px;
+	  font-size: $large-font-size;
 	  line-height: $tableRowHeight;
 	  color: black;
 	  border-bottom: 2px solid $grey-color-light;

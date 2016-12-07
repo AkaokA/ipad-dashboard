@@ -5,6 +5,7 @@
 var nextBusURL = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=3204";
 var tableClassName = ".nextBusTable";
 var secondsToRefresh = 15;
+var itemsToDisplay = 3;
 
 var parseTime = function(time) {
 	var minutes = Math.floor(time / 60);
@@ -27,7 +28,7 @@ var displayXML = function(xmlNode) {
 	console.log(predictionItemsArray);
 	
 	// Iterate through the XML
-	for (var i = 0; i < predictionItemsArray.length; i++) {
+	for (var i = 0; i < itemsToDisplay; i++) {
 		var predictionItem = predictionItemsArray[i];
 
 		var rawTime = predictionItem.getAttribute("seconds");
