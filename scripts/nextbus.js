@@ -3,7 +3,7 @@
 // stops list (for route 91, for example): http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=91
 
 var nextBusURL = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=3204";
-var widgetClassName = ".nextBusWidget";
+var tableClassName = ".nextBusTable";
 var secondsToRefresh = 15;
 
 var parseTime = function(time) {
@@ -38,23 +38,27 @@ var displayXML = function(xmlNode) {
 		
 		// update status label for current row
 		if (rawTime < 180) {
-			status = 'Arriving Now';
+			status = 'Too Late';
 			colorClass = 'red';
 		} else if (rawTime < 360) {
-			status = 'Arriving Soon';
+			status = 'Leave Now';
 			colorClass = 'amber'
 		} else if (rawTime < 600) {
 			status = 'Approaching';
+			colorClass = 'grey'
+		} else {
+			status = '';
+			colorClass = 'darkGrey'
 		}
 		
 		// Create table row
 		var busNumberColumn = '<div class="tableCell busNumberColumn">' + busNumber + '</div>'
-		var etaColumn = '<div class="tableCell etaColumn '+ colorClass +'">' + eta + '</div>'
-		var statusColumn = '<div class="tableCell statusColumn '+ colorClass +'">' + status + '</div>'
+		var etaColumn = '<div class="tableCell etaColumn">' + eta + '</div>'
+		var statusColumn = '<div class="tableCell statusColumn">' + status + '</div>'
 		
-		var tableRow = '<div class="tableRow">' + etaColumn + statusColumn + '</div>';
+		var tableRow = '<div class="tableRow '+ colorClass +'">' + etaColumn + statusColumn + '</div>';
 
-		$(widgetClassName).append(tableRow);
+		$(tableClassName).append(tableRow);
 	}
 }
 
