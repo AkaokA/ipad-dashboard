@@ -8,8 +8,8 @@ $base-font-family: "adelle-sans-1", "adelle-sans-2", Helvetica, Arial, sans-seri
 $base-font-size:   				24px;
 $base-line-height: 				1.5;
 
-$large-font-size:         2em;
-$huge-font-size:          6em;
+$large-font-size:         $base-font-size * 2;
+$huge-font-size:          $base-font-size * 8;
 
 $spacing-unit:     				20px;
 
@@ -19,7 +19,8 @@ $background-color-light:	#fff;
 $accent-color:     				#ef1f4f;
 
 $red-color:								#ef1f4f;
-$amber-color:							#ffcc00;
+$amber-color:							#ffae00;
+$green-color:             #009580;
 
 $grey-color:       				#828282;
 $grey-color-light:				#eee;
@@ -74,41 +75,40 @@ body {
     @extend %clearfix;
 }
 
-h1 {
-	font-size: $large-font-size;
-	font-weight: 200;
-	line-height: 2;
-}
-
-$header-height: 584px;
-
-header {
-	position: absolute;
-	z-index: 0;
-	height: $header-height;
-	width: 100%;
-	padding-top: $spacing-unit * 10;
-	text-align: center;
-	
-	p {
-		color: $grey-color;
-	}
-}
-
 .timeAndWeatherWidget {
   position: absolute;
   width: 100%;
-  text-align: center;
-  padding: $spacing-unit*5 0;
+//   text-align: center;
+  padding: 0 $spacing-unit*2;
   
   .timeDisplay {
     font-size: $huge-font-size;
     font-weight: 100;
     line-height: 1;
+    margin: $spacing-unit*5 0;
+    
+    .ampm {
+      font-size: $large-font-size;
+      font-weight: 600;
+      margin-left: 0.5em;
+    }
   }
   
   .weatherDisplay {
-    padding: $spacing-unit*4 0;
+    
+    .temps {
+    	font-size: $large-font-size;
+    	font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+    
+    .summary {
+      
+    }
+    
+    .precip {
+      
+    }
   }
 }
 
@@ -117,8 +117,6 @@ header {
 	width: 100%;
 	bottom: 0;
 	background-color: $background-color-light;
-	-webkit-font-feature-settings: "tnum";
-  font-feature-settings: "tnum";
   
   .tableHeader {
 	  position: relative;
@@ -168,22 +166,29 @@ header {
 	  		color: $amber-color;
 	  	}
   	}
+
+  	&.green {
+	  	font-weight: 600;
+	  	
+	  	.statusColumn {
+	  		color: $green-color;
+	  	}
+  	}
   			
   }
   
   .tableCell {
 	  position: absolute;
   	height: 100%;
-  	padding: 0 $spacing-unit;
-  	  	
+  	padding: 0 $spacing-unit*2;
   }
 	
   .etaColumn {
 	  width: 38%;
-		text-align: right;
   }
   .statusColumn {
 	  left: 38%;
   }
 
 }
+

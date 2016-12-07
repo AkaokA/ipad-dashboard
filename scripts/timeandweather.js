@@ -2,19 +2,32 @@ var $dateElement = $(".timeDisplay");
 var $weatherElement = $(".weatherDisplay");
 
 var displayTime = function() {
-  setTimeout(function(){
-    var currentTime = new Date();
-    var timeDisplayString = "";
-    var minutesString = currentTime.getMinutes();
-    
-    if (currentTime.getMinutes() < 10) {
-      minutesString = "0" + currentTime.getMinutes();
-    }
-    
-    timeDisplayString = currentTime.getHours() + ":" + minutesString;
-    
-  	$dateElement.html(timeDisplayString);
-  }, 500);
+  var currentTime = new Date();
+  var timeDisplayString = "";
+  var hoursString = currentTime.getHours();
+  var minutesString = currentTime.getMinutes();
+  var ampm = ""
+  
+  // bit of formatting
+  
+  if (currentTime.getHours() > 12) {
+    hoursString = currentTime.getHours() - 12;
+    ampm = "<span class='ampm'>PM</span>"
+  } else {
+    ampm = "<span class='ampm'>AM</span>"
+  }
+  
+  if (currentTime.getMinutes() < 10) {
+    minutesString = "0" + currentTime.getMinutes();
+  }
+  
+  timeDisplayString = hoursString + ":" + minutesString + ampm;
+	$dateElement.html(timeDisplayString);
+	
+	setTimeout(function() {
+  	displayTime();
+  }, 1000);
+	
 }
 
 var getWeatherJSON = function() {
@@ -24,22 +37,29 @@ var getWeatherJSON = function() {
     dataType: "jsonp",
     crossDomain: true,
     success: function (data) {
-      console.log(data)
-      
-      var maxTemp = Math.round(data.daily.data[0].apparentTemperatureMax);
-      var minTemp = Math.round(data.daily.data[0].apparentTemperatureMin);
-      var precipProbability = Math.round(data.daily.data[0].precipProbability * 100);
-      
-      $weatherElement.find('.temps').html(maxTemp + "&deg; / " + minTemp + "&deg;");
-      $weatherElement.find('.summary').html(data.daily.data[0].summary);
-      $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ".");
+      console.log(data);
+      displayWeather(data);
     },
     error: function (xhr, ajaxOptions, thrownError) {
     }
   });	
 }
 
+var displayWeather = function(data) {
+  var maxTemp = Math.round(data.daily.data[0].apparentTemperatureMax);
+  var minTemp = Math.round(data.daily.data[0].apparentTemperatureMin);
+  var precipProbability = Math.round(data.daily.data[0].precipProbability * 100);
+  
+  $weatherElement.find('.temps').html(maxTemp + "&deg; / " + minTemp + "&deg;");
+  $weatherElement.find('.summary').html(data.daily.data[0].summary);
+  $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ".");
+  
+  setTimeout(function() {
+  	getWeatherJSON();
+  }, 3600000);
+}
+
 $(document).ready(function(){
   displayTime();
-  getWeatherJSON()
+  getWeatherJSON();
 });

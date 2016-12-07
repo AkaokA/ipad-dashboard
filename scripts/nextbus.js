@@ -4,7 +4,6 @@
 
 var nextBusURL = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=3204";
 var tableClassName = ".nextBusTable";
-var secondsToRefresh = 15;
 var itemsToDisplay = 3;
 
 var parseTime = function(time) {
@@ -14,7 +13,12 @@ var parseTime = function(time) {
 	if (seconds < 10) {
 		seconds = '0'+seconds;
 	}
-	return minutes+":"+seconds;
+	
+  if (minutes < 10) {
+		minutes = ''+minutes;
+	}
+
+	return minutes+"m "+seconds+"s";
 }
 
 var displayXML = function(xmlNode) {
@@ -44,12 +48,12 @@ var displayXML = function(xmlNode) {
 		} else if (rawTime < 360) {
 			status = 'Leave Now';
 			colorClass = 'amber'
-		} else if (rawTime < 600) {
+		} else if (rawTime < 540) {
 			status = 'Approaching';
-			colorClass = 'grey'
+			colorClass = 'green'
 		} else {
 			status = '';
-			colorClass = 'darkGrey'
+			colorClass = ''
 		}
 		
 		// Create table row
@@ -64,26 +68,25 @@ var displayXML = function(xmlNode) {
 }
 
 var waitAndRefresh = function() {
-	var pollingRate = secondsToRefresh * 1000;
 	setTimeout(function(){
 		getNextBusData(nextBusURL);
-	}, pollingRate);
+	}, 30000);
 }
 
 // Get JSON from NextBus
 var getNextBusData = function(url) {
 	$.get(url)
-	.done(function(xml) {
+	.done(function(data) {
 		console.log('XML loaded successfully.');
 		$('.tableRow').remove();								
-		displayXML(xml);
+		displayXML(data);
 	})
 	.fail(function(jqxhr, textStatus, error) {
 		var err = textStatus + ', ' + error;
 		console.log( "Request Failed: " + err);
 	})
 	.always(function() { 
-		console.log( "complete" ); 
+		console.log( "complete" );
 		waitAndRefresh();
 	});
 }
