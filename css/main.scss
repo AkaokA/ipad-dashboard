@@ -97,7 +97,6 @@ body {
   }
   
   .weatherDisplay {
-    
     .temps {
     	font-size: $large-font-size;
     	font-weight: 600;
@@ -122,8 +121,10 @@ body {
       }
       
       .maxTemp {
+        position: relative;
         background-color: $red-color;
         margin-left: - 10px;
+        z-index: 1000;
       }
       .minTemp {
         background-color: $blue-color;
@@ -137,7 +138,10 @@ body {
     }
     
     .precip {
-      
+      &.umbrella {
+        font-weight: 600;
+        color: $blue-color;
+      }
     }
   }
 }

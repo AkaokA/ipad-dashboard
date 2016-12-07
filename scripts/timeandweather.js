@@ -53,7 +53,12 @@ var displayWeather = function(data) {
   $weatherElement.find('.maxTemp').html(maxTemp + "&deg;");
   $weatherElement.find('.minTemp').html(minTemp + "&deg;");
   $weatherElement.find('.summary').html(data.daily.data[0].summary);
-  $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ".");
+  $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ". ");
+  
+  if (precipProbability >= 20) {
+    $(".precip").addClass("umbrella");
+    $(".precip").append("Consider your umbrella.")
+  }
   
   setTimeout(function() {
   	getWeatherJSON();
