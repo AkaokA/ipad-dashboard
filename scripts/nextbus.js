@@ -110,4 +110,6 @@ function parseXml(xml) {
 	return dom;
 }
 
-getNextBusData(nextBusURL);
+$(document).ready(function(){
+  getNextBusData(nextBusURL);
+});
