@@ -17,27 +17,29 @@ var displayTime = function() {
   }, 500);
 }
 
-var getWeatherJSON = function(url) {
-	$.get(url)
-	.done(function(weatherData) {
-		console.log('XML loaded successfully.');
-    console.log(weatherData);
-	})
-	.fail(function(jqxhr, textStatus, error) {
-		var err = textStatus + ', ' + error;
-		console.log( "Request Failed: " + err);
-	})
-	.always(function() { 
-		console.log( "complete" ); 
-		// TODO: refresh with interval
-	});
-}
-
-var displayWeather = function() {
-  getWeatherJSON("https://api.darksky.net/forecast/56636eda0499cbe93fced92b3268b26a/37.8267,-122.4233")
+var getWeatherJSON = function() {
+  $.ajax({
+    type: "GET",
+    url: "https://api.darksky.net/forecast/56636eda0499cbe93fced92b3268b26a/43.6906994,-79.3195922?units=ca", 
+    dataType: "jsonp",
+    crossDomain: true,
+    success: function (data) {
+      console.log(data)
+      
+      var maxTemp = Math.round(data.daily.data[0].apparentTemperatureMax);
+      var minTemp = Math.round(data.daily.data[0].apparentTemperatureMin);
+      var precipProbability = Math.round(data.daily.data[0].precipProbability * 100);
+      
+      $weatherElement.find('.temps').html(maxTemp + "&deg; / " + minTemp + "&deg;");
+      $weatherElement.find('.summary').html(data.daily.data[0].summary);
+      $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ".");
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+    }
+  });	
 }
 
 $(document).ready(function(){
   displayTime();
-  displayWeather();
+  getWeatherJSON()
 });

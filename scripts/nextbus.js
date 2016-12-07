@@ -25,7 +25,7 @@ var displayXML = function(xmlNode) {
 	    return a.getAttribute("seconds") - b.getAttribute("seconds");
 	});
 	
-	console.log(predictionItemsArray);
+// 	console.log(predictionItemsArray);
 	
 	// Iterate through the XML
 	for (var i = 0; i < itemsToDisplay; i++) {

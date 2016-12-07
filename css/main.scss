@@ -9,7 +9,7 @@ $base-font-size:   				24px;
 $base-line-height: 				1.5;
 
 $large-font-size:         2em;
-$huge-font-size:          8em;
+$huge-font-size:          6em;
 
 $spacing-unit:     				20px;
 
@@ -76,7 +76,7 @@ body {
 
 h1 {
 	font-size: $large-font-size;
-	font-weight: 600;
+	font-weight: 200;
 	line-height: 2;
 }
 
@@ -99,12 +99,16 @@ header {
   position: absolute;
   width: 100%;
   text-align: center;
-  padding: $spacing-unit*8 0;
+  padding: $spacing-unit*5 0;
   
   .timeDisplay {
     font-size: $huge-font-size;
     font-weight: 100;
     line-height: 1;
+  }
+  
+  .weatherDisplay {
+    padding: $spacing-unit*4 0;
   }
 }
 
