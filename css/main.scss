@@ -16,14 +16,16 @@ $spacing-unit:     				20px;
 $text-color:       				#fff;
 $background-color: 				#000;
 $background-color-light:	#fff;
-$accent-color:     				#ef1f4f;
 
-$red-color:								#ef1f4f;
-$amber-color:							#ffae00;
-$green-color:             #009580;
+$red-color:								#FE2851;
+$blue-color:              #0076FF;
+$amber-color:							#FFCD00;
+$green-color:             #44DB5E;
 
-$grey-color:       				#828282;
-$grey-color-light:				#eee;
+$accent-color:     				$red-color;
+
+$grey-color:       				#A4AAB3;
+$grey-color-light:				#C7C7CD;
 
 // Width of the content area
 $content-width:   960px;
@@ -55,37 +57,37 @@ dl, dd, ol, ul, figure {
 }
 
 body {
-    font-family: $base-font-family;
-    font-size: $base-font-size;
-    line-height: $base-line-height;
-    font-weight: 300;
-    color: $text-color;
-    background-color: $background-color;
-    -webkit-text-size-adjust: 100%;
-    
-    height: 100%;
-    overflow: hidden;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+  font-weight: 300;
+  color: $text-color;
+  background-color: $background-color;
+  -webkit-text-size-adjust: 100%;
+  
+  height: 100%;
+  overflow: hidden;
 }
 
 .wrapper {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		
-    @extend %clearfix;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+  @extend %clearfix;
 }
 
 .timeAndWeatherWidget {
   position: absolute;
   width: 100%;
-//   text-align: center;
   padding: 0 $spacing-unit*2;
   
   .timeDisplay {
     font-size: $huge-font-size;
     font-weight: 100;
     line-height: 1;
-    margin: $spacing-unit*5 0;
+    margin: $spacing-unit*4 0;
+    margin-left: - 5px;
     
     .ampm {
       font-size: $large-font-size;
@@ -100,6 +102,34 @@ body {
     	font-size: $large-font-size;
     	font-weight: 600;
       letter-spacing: 0.1em;
+      font-size: 0;
+      margin-bottom: $spacing-unit;
+      
+      $tempDisplaySize: 100px;
+      $tempDisplayStroke: 6px;
+      
+      .maxTemp, .minTemp {
+        display: inline-block;
+        width: $tempDisplaySize;
+        height: $tempDisplaySize;
+        font-size: $large-font-size;
+        border: $tempDisplayStroke solid $background-color;
+        border-radius: 50%;
+        color: $text-color;
+        text-align: center;
+        line-height: $tempDisplaySize - $tempDisplayStroke*2;
+        overflow: hidden;
+      }
+      
+      .maxTemp {
+        background-color: $red-color;
+        margin-left: - 10px;
+      }
+      .minTemp {
+        background-color: $blue-color;
+        margin-left: - $spacing-unit;
+      }
+      
     }
     
     .summary {
@@ -141,6 +171,7 @@ body {
 	  width: 100%;
 	  height: $tableRowHeight;
 	  font-size: $large-font-size;
+    font-weight: 600;
 	  line-height: $tableRowHeight;
 	  color: black;
 	  border-bottom: 2px solid $grey-color-light;
@@ -148,30 +179,29 @@ body {
 	  
 	  .etaColumn {
 		  letter-spacing: 0.025em;
-		  font-weight: 600;
 	  }
 
-  	&.red {
-	  	font-weight: 600;
-	  	
+  	&.red {	  	
 	  	.statusColumn {
 	  		color: $red-color;
 	  	}
   	}
   	
-  	&.amber {
-	  	font-weight: 600;
-	  	
+  	&.amber {	  	
 	  	.statusColumn {
 	  		color: $amber-color;
 	  	}
   	}
 
   	&.green {
-	  	font-weight: 600;
-	  	
 	  	.statusColumn {
 	  		color: $green-color;
+	  	}
+  	}
+
+  	&.grey {
+	  	.statusColumn {
+	  		color: $grey-color;
 	  	}
   	}
   			

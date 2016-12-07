@@ -50,7 +50,8 @@ var displayWeather = function(data) {
   var minTemp = Math.round(data.daily.data[0].apparentTemperatureMin);
   var precipProbability = Math.round(data.daily.data[0].precipProbability * 100);
   
-  $weatherElement.find('.temps').html(maxTemp + "&deg; / " + minTemp + "&deg;");
+  $weatherElement.find('.maxTemp').html(maxTemp + "&deg;");
+  $weatherElement.find('.minTemp').html(minTemp + "&deg;");
   $weatherElement.find('.summary').html(data.daily.data[0].summary);
   $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ".");
   

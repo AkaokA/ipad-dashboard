@@ -50,7 +50,7 @@ var displayXML = function(xmlNode) {
 			colorClass = 'amber'
 		} else if (rawTime < 540) {
 			status = 'Approaching';
-			colorClass = 'green'
+			colorClass = 'grey'
 		} else {
 			status = '';
 			colorClass = ''
