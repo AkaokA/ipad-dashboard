@@ -5,24 +5,24 @@
 
 // Our variables
 $base-font-family: "adelle-sans-1", "adelle-sans-2", Helvetica, Arial, sans-serif;
-$base-font-size:   	24px;
-$base-line-height: 	1.4;
+$base-font-size:   				24px;
+$base-line-height: 				1.4;
 
-$spacing-unit:     	20px;
+$spacing-unit:     				20px;
 
-$text-color:       	#fff;
-$background-color: 	#eee;
-$accent-color:     	#ef1f4f;
+$text-color:       				#fff;
+$background-color: 				#000;
+$background-color-light:	#fff;
+$accent-color:     				#ef1f4f;
 
-$red-color:					#ef1f4f;
-$amber-color:				#ffcc00;
+$red-color:								#ef1f4f;
+$amber-color:							#ffcc00;
 
-$grey-color:       	#828282;
-$grey-color-light:	#ddd;
-$grey-color-dark:   #444;
+$grey-color:       				#828282;
+$grey-color-light:				#eee;
 
 // Width of the content area
-$content-width:    	960px;
+$content-width:    				960px;
 
 
 /**
@@ -78,7 +78,6 @@ header {
 	height: 224px;
 	padding-top: $spacing-unit*2;
 	text-align: center;
-	background-color: black;
 	
 	p {
 		color: $grey-color;
@@ -98,16 +97,17 @@ header {
 	  text-transform: uppercase;
 	  letter-spacing: 0.1em;
 	  background-color: $accent-color;
-	  border-bottom: 2px solid $background-color;
 	  color: $text-color;
 	  @extend %clearfix;
   }
+
+  $tableRowHeight: 120px;
   
   .nextBusTable {
-
+	  height: $tableRowHeight * 6;
+		background-color: $background-color-light;
   }
   
-  $tableRowHeight: 120px;
   
   .tableRow {
 	  position: relative;
@@ -115,11 +115,9 @@ header {
 	  height: $tableRowHeight;
 	  font-size: 48px;
 	  line-height: $tableRowHeight;
-	  @extend %clearfix;
-	  
-	  background-color: $background-color;
 	  color: black;
 	  border-bottom: 2px solid $grey-color-light;
+	  @extend %clearfix;
 	  
 	  .etaColumn {
 		  letter-spacing: 0.025em;
@@ -135,11 +133,10 @@ header {
   	}
   	
   	&.amber {
-	  	background-color: $amber-color;
 	  	font-weight: 600;
 	  	
 	  	.statusColumn {
-	  		color: $red-color;
+	  		color: $amber-color;
 	  	}
   	}
   			
