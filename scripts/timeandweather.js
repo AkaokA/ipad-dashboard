@@ -11,9 +11,12 @@ var displayTime = function() {
   // bit of formatting
   
   if (currentTime.getHours() > 12) {
-    hoursString = currentTime.getHours() - 12;
+    hoursString = currentTime.getHours() - 10;
     ampm = "<span class='ampm'>PM</span>"
   } else {
+	  if (currentTime.getHours() == 0) {
+	  	hoursString = 12;
+	  }
     ampm = "<span class='ampm'>AM</span>"
   }
   
