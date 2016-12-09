@@ -49,8 +49,11 @@ var formatTime = function(time, showHours, showMinutes, showAMPM) {
 var displayTime = function() {
   var currentTime = new Date();
   
-  // bit of formatting
 	$dateElement.html(formatTime(currentTime, true, true, true));
+	
+	// position current time marker in forecast graph
+	var currentTimePercent = ( (currentTime.getHours() * 3600) + (currentTime.getMinutes() * 60) + currentTime.getSeconds() ) / 864;
+	$('.currentTimeMarker').css("left", currentTimePercent + "%");
 	
 	setTimeout(function() {
   	displayTime();
@@ -74,21 +77,26 @@ var getWeatherJSON = function() {
 }
 
 var displayWeather = function(data) {
+  // get data
   var forecastDay = 0; // set to '0' for today's forecast; change to debug
   
   var maxTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMax);
   var minTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMin);
-  var maxTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMaxTime*1000);
-  var minTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMinTime*1000);
+  var maxTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMaxTime * 1000);
+  var minTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMinTime * 1000);
   var precipProbability = Math.round(data.daily.data[forecastDay].precipProbability * 100);
   var precipType = data.daily.data[forecastDay].precipType;
   
-  console.log(maxTempTime.getFullYear());
+  // display high/low temperatures
+  $('.highTemp').html(maxTemp + "&deg;");
+  $('.lowTemp').html(minTemp + "&deg;");
+  $('.highTempTime').html(formatTime(maxTempTime, true, false, true));
+  $('.lowTempTime').html(formatTime(minTempTime, true, false, true));
+    
+  $('.tempDisplay.high').css("left", (maxTempTime.getHours() / 24 * 100) + "%");
+  $('.tempDisplay.low').css("left", (minTempTime.getHours() / 24 * 100) + "%");
   
-  $('.maxTemp').html(maxTemp + "&deg;");
-  $('.minTemp').html(minTemp + "&deg;");
-  $('.maxTempTime').html(formatTime(maxTempTime, true, false, true));
-  $('.minTempTime').html(formatTime(minTempTime, true, false, true));
+  // display weather summary
   $('.summary').html(data.daily.data[forecastDay].summary);
   
   if (precipType) {
@@ -104,6 +112,7 @@ var displayWeather = function(data) {
     }
   }
   
+  // loop
   setTimeout(function() {
   	getWeatherJSON();
   }, 3600000);
