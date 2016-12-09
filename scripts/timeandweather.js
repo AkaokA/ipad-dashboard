@@ -1,31 +1,56 @@
 var $dateElement = $(".timeDisplay");
 var $weatherElement = $(".weatherDisplay");
 
+
+var formatTime = function(time, showHours, showMinutes, showAMPM) {
+  var timeDisplayString = "";
+  var hoursString = time.getHours();
+  var minutesString = time.getMinutes();
+  var ampm = ""
+
+  // hours
+  if (showHours) {
+    if (time.getHours() > 12) {
+      hoursString = time.getHours() - 12;
+      if (showAMPM) {
+        ampm = "<span class='ampm'>PM</span>"
+      }
+    } else {
+  	  if (time.getHours() == 0) {
+  	  	hoursString = 12;
+  	  }
+      if (showAMPM) {
+        ampm = "<span class='ampm'>AM</span>"
+      }
+    }
+  } else {
+    hoursString = "";
+  }
+  
+  // minutes
+  if (showMinutes) {
+    if (time.getMinutes() < 10) {
+      minutesString = "0" + time.getMinutes();
+    }
+  } else {
+    minutesString = "";
+  }
+    
+  // assemble string
+  if (showHours && showMinutes) {
+    timeDisplayString = hoursString + ":" + minutesString + ampm;
+  } else {
+    timeDisplayString = hoursString + minutesString + ampm;
+  }
+  
+  return timeDisplayString;
+}
+
 var displayTime = function() {
   var currentTime = new Date();
-  var timeDisplayString = "";
-  var hoursString = currentTime.getHours();
-  var minutesString = currentTime.getMinutes();
-  var ampm = ""
   
   // bit of formatting
-  
-  if (currentTime.getHours() > 12) {
-    hoursString = currentTime.getHours() - 10;
-    ampm = "<span class='ampm'>PM</span>"
-  } else {
-	  if (currentTime.getHours() == 0) {
-	  	hoursString = 12;
-	  }
-    ampm = "<span class='ampm'>AM</span>"
-  }
-  
-  if (currentTime.getMinutes() < 10) {
-    minutesString = "0" + currentTime.getMinutes();
-  }
-  
-  timeDisplayString = hoursString + ":" + minutesString + ampm;
-	$dateElement.html(timeDisplayString);
+	$dateElement.html(formatTime(currentTime, true, true, true));
 	
 	setTimeout(function() {
   	displayTime();
@@ -49,18 +74,34 @@ var getWeatherJSON = function() {
 }
 
 var displayWeather = function(data) {
-  var maxTemp = Math.round(data.daily.data[0].apparentTemperatureMax);
-  var minTemp = Math.round(data.daily.data[0].apparentTemperatureMin);
-  var precipProbability = Math.round(data.daily.data[0].precipProbability * 100);
+  var forecastDay = 0; // set to '0' for today's forecast; change to debug
   
-  $weatherElement.find('.maxTemp').html(maxTemp + "&deg;");
-  $weatherElement.find('.minTemp').html(minTemp + "&deg;");
-  $weatherElement.find('.summary').html(data.daily.data[0].summary);
-  $weatherElement.find('.precip').html(precipProbability + "% chance of " + data.daily.data[0].precipType + ". ");
+  var maxTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMax);
+  var minTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMin);
+  var maxTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMaxTime*1000);
+  var minTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMinTime*1000);
+  var precipProbability = Math.round(data.daily.data[forecastDay].precipProbability * 100);
+  var precipType = data.daily.data[forecastDay].precipType;
+  
+  console.log(maxTempTime.getFullYear());
+  
+  $('.maxTemp').html(maxTemp + "&deg;");
+  $('.minTemp').html(minTemp + "&deg;");
+  $('.maxTempTime').html(formatTime(maxTempTime, true, false, true));
+  $('.minTempTime').html(formatTime(minTempTime, true, false, true));
+  $('.summary').html(data.daily.data[forecastDay].summary);
+  
+  if (precipType) {
+    $weatherElement.find('.precip').html(precipProbability + "% chance of " + precipType + ". ");
+  } else {
+    $weatherElement.find('.precip').html("");
+  }
   
   if (precipProbability >= 20) {
-    $(".precip").addClass("umbrella");
-    $(".precip").append("Consider your umbrella.")
+    if (precipType == "rain") {
+      $(".precip").append("Consider your umbrella.")
+      $(".precip").addClass("umbrella");
+    }
   }
   
   setTimeout(function() {

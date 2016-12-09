@@ -107,8 +107,13 @@ body {
       $tempDisplaySize: 100px;
       $tempDisplayStroke: 6px;
       
-      .maxTemp, .minTemp {
+      .tempWrapper {
+        text-align: center;
         display: inline-block;
+        margin-left: - 10px;
+      }
+      
+      .maxTemp, .minTemp {
         width: $tempDisplaySize;
         height: $tempDisplaySize;
         font-size: $large-font-size;
@@ -123,14 +128,16 @@ body {
       .maxTemp {
         position: relative;
         background-color: $red-color;
-        margin-left: - 10px;
         z-index: 1000;
       }
       .minTemp {
         background-color: $blue-color;
-        margin-left: - $spacing-unit;
       }
       
+      .maxTempTime,
+      .minTempTime {
+        font-size: $base-font-size;
+      }
     }
     
     .summary {

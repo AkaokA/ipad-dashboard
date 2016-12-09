@@ -21,8 +21,8 @@ var parseTime = function(time) {
 	return minutes+"m "+seconds+"s";
 }
 
-var displayXML = function(xmlNode) {
-	var predictionItems = xmlNode.getElementsByTagName("prediction");
+var displayXML = function(jsonData) {
+	var predictionItems = jsonData.getElementsByTagName("prediction");
 	var predictionItemsArray = Array.prototype.slice.call(predictionItems, 0);
 				
 	predictionItemsArray.sort(function(a,b) {
