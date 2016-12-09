@@ -46,13 +46,17 @@ var formatTime = function(time, showHours, showMinutes, showAMPM) {
   return timeDisplayString;
 }
 
+var getTimePercent = function(time) {
+  return ( (time.getHours() * 3600) + (time.getMinutes() * 60) + time.getSeconds() ) / 864;
+}
+
 var displayTime = function() {
   var currentTime = new Date();
   
 	$dateElement.html(formatTime(currentTime, true, true, true));
 	
 	// position current time marker in forecast graph
-	var currentTimePercent = ( (currentTime.getHours() * 3600) + (currentTime.getMinutes() * 60) + currentTime.getSeconds() ) / 864;
+	var currentTimePercent = getTimePercent(currentTime);
 	$('.currentTimeMarker').css("left", currentTimePercent + "%");
 	
 	setTimeout(function() {
@@ -84,6 +88,8 @@ var displayWeather = function(data) {
   var minTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMin);
   var maxTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMaxTime * 1000);
   var minTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMinTime * 1000);
+  var sunrise = new Date(data.daily.data[forecastDay].sunriseTime * 1000);
+  var sunset = new Date(data.daily.data[forecastDay].sunsetTime * 1000);
   var precipProbability = Math.round(data.daily.data[forecastDay].precipProbability * 100);
   var precipType = data.daily.data[forecastDay].precipType;
   
@@ -92,7 +98,10 @@ var displayWeather = function(data) {
   $('.lowTemp').html(minTemp + "&deg;");
   $('.highTempTime').html(formatTime(maxTempTime, true, false, true));
   $('.lowTempTime').html(formatTime(minTempTime, true, false, true));
-    
+  
+  $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
+  $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
+  
   $('.tempDisplay.high').css("left", (maxTempTime.getHours() / 24 * 100) + "%");
   $('.tempDisplay.low').css("left", (minTempTime.getHours() / 24 * 100) + "%");
   
