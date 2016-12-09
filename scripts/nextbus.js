@@ -44,16 +44,16 @@ var displayXML = function(jsonData) {
 		// update status label for current row
 		if (rawTime < 180) {
 			status = 'Too Late';
-			colorClass = 'red';
+			colorClass = 'tooLateStatus';
 		} else if (rawTime < 360) {
 			status = 'Leave Now';
-			colorClass = 'blue'
+			colorClass = 'leaveNowStatus'
 		} else if (rawTime < 540) {
 			status = 'Approaching';
-			colorClass = 'grey'
+			colorClass = 'approachingStatus'
 		} else {
 			status = '—';
-			colorClass = 'grey'
+			colorClass = 'defaultStatus'
 		}
 		
 		// Create table row
