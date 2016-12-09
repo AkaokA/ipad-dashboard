@@ -47,13 +47,13 @@ var displayXML = function(jsonData) {
 			colorClass = 'red';
 		} else if (rawTime < 360) {
 			status = 'Leave Now';
-			colorClass = 'amber'
+			colorClass = 'blue'
 		} else if (rawTime < 540) {
 			status = 'Approaching';
 			colorClass = 'grey'
 		} else {
-			status = '';
-			colorClass = ''
+			status = '—';
+			colorClass = 'grey'
 		}
 		
 		// Create table row

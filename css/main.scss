@@ -124,8 +124,8 @@ body {
         position: absolute;
         top: 50%;
         -webkit-transform: translateY(-50%);
-        height: 4px;
-        background-color: $amber-color;
+        height: 2px;
+        background-color: $grey-color;
         box-sizing: content-box;
         border-left: 4px solid $background-color;
         border-right: 4px solid $background-color;
@@ -204,7 +204,7 @@ body {
         position: absolute;
         width: 4px;
         height: 100%;
-        background-color: $text-color;
+        background-color: $amber-color;
         box-sizing: content-box;
         border-left: 4px solid $background-color;
         border-right: 4px solid $background-color;
@@ -289,6 +289,12 @@ body {
   	&.grey {
 	  	.statusColumn {
 	  		color: $grey-color;
+	  	}
+  	}
+  	
+  	&.blue {
+	  	.statusColumn {
+	  		color: $blue-color;
 	  	}
   	}
   			
