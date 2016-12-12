@@ -89,6 +89,8 @@ var updateWeatherDisplay = function(data) {
   var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
   var precipType = dailyForecastData[forecastDay].precipType;
   
+  $(".precipBar").remove();
+  
   for (var hour = 0; hour < 24; hour++) {
     var precipTime = new Date(hourlyForecastData[hour].time * 1000);
     var timePercent = getTimePercent(precipTime);
