@@ -97,15 +97,15 @@ body {
     }
   }
   
-  $midlineHeight: 100%;
+  $midlineHeight: 90%;
   
   .weatherDisplay {
     .forecastGraph {
       position: relative;
       width: 100%;
-      height: 60px;
+      height: 80px;
       margin-top: $large-font-size + $spacing-unit * 4;
-      margin-bottom: $base-font-size + $spacing-unit * 4;
+      margin-bottom: $base-font-size + $spacing-unit * 2;
       font-size: 0;
       
       & > * {
@@ -231,9 +231,9 @@ body {
         box-sizing: content-box;
         border: 4px solid $background-color;
         border-radius: 2px;
-        top: 0;
+        top: 50%;
         left: 50%;
-        -webkit-transform: translateX(-50%);
+        -webkit-transform: translate(-50%, -50%);
       }
 
     }
