@@ -92,7 +92,6 @@ var updateWeatherDisplay = function(data) {
   for (var hour = 0; hour < 24; hour++) {
     var precipTime = new Date(hourlyForecastData[hour].time * 1000);
     var timePercent = getTimePercent(precipTime);
-    
     var precipBarPrototype = "<div class='precipBar'></div>"
     var precipBarPercent = hourlyForecastData[hour].precipProbability * 100;
     
@@ -100,7 +99,8 @@ var updateWeatherDisplay = function(data) {
       $(".precipitationGraph").append(precipBarPrototype)
       $(".precipBar:last-child").css({
         "left": timePercent + "%",
-        "height": precipBarPercent + "%"
+        "height": precipBarPercent + "%",
+        "opacity": 1.1 - hour/24
       });
     }  
   }
@@ -143,5 +143,5 @@ $(document).ready(function(){
   getWeatherJSON();
   setInterval(function() {
   	getWeatherJSON();
-  }, 3600000); // every hour
+  }, 600000); // every ten minutes
 });
