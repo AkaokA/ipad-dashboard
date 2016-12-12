@@ -100,7 +100,7 @@ var updateWeatherDisplay = function(data) {
       $(".precipBar:last-child").css({
         "left": timePercent + "%",
         "height": precipBarPercent + "%",
-        "opacity": 1.1 - hour/24
+        "opacity": 1.25 - hour/24
       });
     }  
   }
