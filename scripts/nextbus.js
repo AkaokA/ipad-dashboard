@@ -21,25 +21,48 @@ var parseTime = function(time) {
 	return minutes+"m "+seconds+"s";
 }
 
-var displayXML = function(jsonData) {
+// Get JSON from NextBus
+var getNextBusData = function(url) {
+	$.get(url)
+	.done(function(data) {
+		console.log('NextBus data Loaded.');
+		$('.tableRow').remove();
+	  
+		parseData(data);
+	})
+	.fail(function(jqxhr, textStatus, error) {
+		var err = textStatus + ', ' + error;
+		console.log( "Request Failed: " + err);
+	})
+	.always(function() { 
+// 		console.log( "complete" );
+	});
+}
+
+var parseData = function(jsonData) {
 	var predictionItems = jsonData.getElementsByTagName("prediction");
 	var predictionItemsArray = Array.prototype.slice.call(predictionItems, 0);
 				
 	predictionItemsArray.sort(function(a,b) {
 	    return a.getAttribute("seconds") - b.getAttribute("seconds");
 	});
-	
-// 	console.log(predictionItemsArray);
-	
+  // 	console.log(predictionItemsArray);
+  
+  updateBusTable(predictionItemsArray);
+}
+
+var updateBusTable = function(predictionItemsArray) {
 	// Iterate through the XML
 	for (var i = 0; i < itemsToDisplay; i++) {
 		var predictionItem = predictionItemsArray[i];
-
+    
 		var rawTime = predictionItem.getAttribute("seconds");
+		
 		var busNumber = predictionItem.getAttribute("vehicle");
-		var eta = parseTime(rawTime);
 		var status = '';
 		var colorClass = '';
+
+		var eta = parseTime(rawTime);
 		
 		// update status label for current row
 		if (rawTime < 180) {
@@ -63,56 +86,14 @@ var displayXML = function(jsonData) {
 		
 		var tableRow = '<div class="tableRow '+ colorClass +'">' + etaColumn + statusColumn + '</div>';
 
-		$(tableClassName).append(tableRow);
-	}
-}
-
-var waitAndRefresh = function() {
-	setTimeout(function(){
-		getNextBusData(nextBusURL);
-	}, 30000);
-}
-
-// Get JSON from NextBus
-var getNextBusData = function(url) {
-	$.get(url)
-	.done(function(data) {
-		console.log('XML loaded successfully.');
-		$('.tableRow').remove();								
-		displayXML(data);
-	})
-	.fail(function(jqxhr, textStatus, error) {
-		var err = textStatus + ', ' + error;
-		console.log( "Request Failed: " + err);
-	})
-	.always(function() { 
-		console.log( "complete" );
-		waitAndRefresh();
-	});
-}
-
-function parseXml(xml) {
-	var dom = null;
-	if (window.DOMParser) {
-		try { 
-			dom = (new DOMParser()).parseFromString(xml, "text/xml"); 
-		} 
-		catch (e) { dom = null; }
-	}
-	else if (window.ActiveXObject) {
-		try {
-			dom = new ActiveXObject('Microsoft.XMLDOM');
-			dom.async = false;
-			if (!dom.loadXML(xml)) // parse error ..
-
-				window.alert(dom.parseError.reason + dom.parseError.srcText);
-		} 
-		catch (e) { dom = null; }
-	} else
-		alert("cannot parse xml string!");
-	return dom;
+		$(tableClassName).append(tableRow);	
+  }
+  console.log("table refreshed.");
 }
 
 $(document).ready(function(){
   getNextBusData(nextBusURL);
+  setInterval(function(){
+		getNextBusData(nextBusURL);
+	}, 30000);
 });

@@ -26,7 +26,7 @@ $accent-color:     				$red-color;
 
 $grey-color:       				#A4AAB3;
 $grey-color-light:				#C7C7CD;
-$grey-color-dark:				  #8F8E94;
+$grey-color-dark:				  #444;
 
 // Width of the content area
 $content-width:   960px;
@@ -97,6 +97,8 @@ body {
     }
   }
   
+  $midlineHeight: 100%;
+  
   .weatherDisplay {
     .forecastGraph {
       position: relative;
@@ -112,13 +114,11 @@ body {
       
       .midline {
         position: absolute;
-        top: 50%;
+        top: $midlineHeight;
         -webkit-transform: translateY(-50%);
         width: 100%;
         height: 2px;
-        background-color: $grey-color-dark;
-        opacity: 0.5;
-        
+        background-color: $grey-color-dark;        
       }
       
       .midlineDot {
@@ -126,7 +126,9 @@ body {
         width: 8px;
         height: 8px;
         border-radius: 10px;
-        top: 50%;
+        border: 3px solid $background-color;
+        box-sizing: content-box;
+        top: $midlineHeight;
         -webkit-transform: translate(-50%,-50%);
         background-color: $grey-color-dark;
         
@@ -145,7 +147,7 @@ body {
       
       .daylightIndicator {
         position: absolute;
-        top: 50%;
+        top: $midlineHeight;
         -webkit-transform: translateY(-50%);
         height: 2px;
         background-color: $grey-color;
@@ -155,28 +157,25 @@ body {
         border-radius: 4px;
       }
       
-      .graphCell {
-        position: relative;
-        display: inline-block;
-        height: 100%;
-        width: 4.1666%;
-        font-size: 12px;
+      .precipitationGraph {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 100 - $midlineHeight;
+        margin: 4px 0;
         
-        .axisLine {
+        .precipBar {
           position: absolute;
-          width: 2px;
-          height: 100%;
-          top: 0;
-          left: 50%;
+          width: 24px;
+          height: 0;
+          bottom: 0;
           -webkit-transform: translateX(-50%);
-          background-color: $grey-color;
-          opacity: 0.25;
+          background-color: $blue-color;
         }
       }
-      
+            
       .tempDisplay {
         position: absolute;
-        width: 60px;
         height: 100%;
         top: 0;
         text-align: center;
@@ -184,8 +183,8 @@ body {
         
         .tempDot {
           position: absolute;
-          width: 30px;
-          height: 30px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           left: 50%;
           -webkit-transform: translate(-50%, -50%);
@@ -230,8 +229,7 @@ body {
         height: 100%;
         background-color: $amber-color;
         box-sizing: content-box;
-        border-left: 4px solid $background-color;
-        border-right: 4px solid $background-color;
+        border: 4px solid $background-color;
         border-radius: 2px;
         top: 0;
         left: 50%;

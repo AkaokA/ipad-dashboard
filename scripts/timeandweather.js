@@ -1,7 +1,6 @@
 var $dateElement = $(".timeDisplay");
 var $weatherElement = $(".weatherDisplay");
 
-
 var formatTime = function(time, showHours, showMinutes, showAMPM) {
   var timeDisplayString = "";
   var hoursString = time.getHours();
@@ -58,11 +57,6 @@ var displayTime = function() {
 	// position current time marker in forecast graph
 	var currentTimePercent = getTimePercent(currentTime);
 	$('.currentTimeMarker').css("left", currentTimePercent + "%");
-	
-	setTimeout(function() {
-  	displayTime();
-  }, 1000);
-	
 }
 
 var getWeatherJSON = function() {
@@ -72,26 +66,43 @@ var getWeatherJSON = function() {
     dataType: "jsonp",
     crossDomain: true,
     success: function (data) {
-      console.log(data);
-      displayWeather(data);
+      console.log("Dark Sky data loaded: ", data);
+      updateWeatherDisplay(data);
     },
     error: function (xhr, ajaxOptions, thrownError) {
     }
   });	
 }
 
-var displayWeather = function(data) {
+var updateWeatherDisplay = function(data) {
   // get data
   var forecastDay = 0; // set to '0' for today's forecast; change to debug
+  var dailyForecastData = data.daily.data;
+  var hourlyForecastData = data.hourly.data;
+
+  var maxTemp = Math.round(dailyForecastData[forecastDay].apparentTemperatureMax);
+  var minTemp = Math.round(dailyForecastData[forecastDay].apparentTemperatureMin);
+  var maxTempTime = new Date(dailyForecastData[forecastDay].apparentTemperatureMaxTime * 1000);
+  var minTempTime = new Date(dailyForecastData[forecastDay].apparentTemperatureMinTime * 1000);
+  var sunrise = new Date(dailyForecastData[forecastDay].sunriseTime * 1000);
+  var sunset = new Date(dailyForecastData[forecastDay].sunsetTime * 1000);
+  var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
+  var precipType = dailyForecastData[forecastDay].precipType;
   
-  var maxTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMax);
-  var minTemp = Math.round(data.daily.data[forecastDay].apparentTemperatureMin);
-  var maxTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMaxTime * 1000);
-  var minTempTime = new Date(data.daily.data[forecastDay].apparentTemperatureMinTime * 1000);
-  var sunrise = new Date(data.daily.data[forecastDay].sunriseTime * 1000);
-  var sunset = new Date(data.daily.data[forecastDay].sunsetTime * 1000);
-  var precipProbability = Math.round(data.daily.data[forecastDay].precipProbability * 100);
-  var precipType = data.daily.data[forecastDay].precipType;
+  for (var hour = 0; hour < 24; hour++) {
+    var precipTime = new Date(hourlyForecastData[hour].time * 1000);
+    var timePercent = getTimePercent(precipTime);
+    
+    var precipBarPrototype = "<div class='precipBar'></div>"
+    var precipBarPercent = hourlyForecastData[hour].precipProbability * 100;
+//     precipBarPercent = 100;
+    $(".precipitationGraph").append(precipBarPrototype)
+    $(".precipBar:last-child").css({
+      "left": timePercent + "%",
+      "height": precipBarPercent + "%"
+      });
+    
+  }
   
   // display high/low temperatures
   $('.highTemp').html(maxTemp + "&deg;");
@@ -114,20 +125,22 @@ var displayWeather = function(data) {
     $weatherElement.find('.precip').html("");
   }
   
-  if (precipProbability >= 20) {
-    if (precipType == "rain") {
+  if (precipType == "rain") {
+    if (precipProbability >= 20) {
       $(".precip").append("Consider your umbrella.")
       $(".precip").addClass("umbrella");
     }
   }
-  
-  // loop
-  setTimeout(function() {
-  	getWeatherJSON();
-  }, 3600000);
 }
 
 $(document).ready(function(){
-  displayTime();
+  displayTime();  
+  setInterval(function() {
+  	displayTime();
+  }, 1000);
+
   getWeatherJSON();
+  setInterval(function() {
+  	getWeatherJSON();
+  }, 3600000);
 });
