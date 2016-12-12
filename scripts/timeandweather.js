@@ -1,5 +1,6 @@
 var $dateElement = $(".timeDisplay");
 var $weatherElement = $(".weatherDisplay");
+var currentTime = new Date();
 
 var formatTime = function(time, showHours, showMinutes, showAMPM) {
   var timeDisplayString = "";
@@ -50,8 +51,7 @@ var getTimePercent = function(time) {
 }
 
 var displayTime = function() {
-  var currentTime = new Date();
-  
+  currentTime = new Date();
 	$dateElement.html(formatTime(currentTime, true, true, true));
 	
 	// position current time marker in forecast graph
