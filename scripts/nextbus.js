@@ -3,7 +3,6 @@
 // stops list (for route 91, for example): http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=91
 
 var nextBusURL = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=ttc&stopId=3204";
-var tableClassName = ".nextBusTable";
 var itemsToDisplay = 3;
 
 var parseTime = function(time) {
@@ -86,7 +85,7 @@ var updateBusTable = function(predictionItemsArray) {
 		
 		var tableRow = '<div class="tableRow '+ colorClass +'">' + etaColumn + statusColumn + '</div>';
 
-		$(tableClassName).append(tableRow);	
+		$(".nextBusTable").append(tableRow);	
   }
   console.log("table refreshed.");
 }
@@ -95,5 +94,5 @@ $(document).ready(function(){
   getNextBusData(nextBusURL);
   setInterval(function(){
 		getNextBusData(nextBusURL);
-	}, 30000);
+	}, 30000); // every 30 seconds
 });

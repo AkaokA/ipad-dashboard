@@ -95,13 +95,14 @@ var updateWeatherDisplay = function(data) {
     
     var precipBarPrototype = "<div class='precipBar'></div>"
     var precipBarPercent = hourlyForecastData[hour].precipProbability * 100;
-//     precipBarPercent = 100;
-    $(".precipitationGraph").append(precipBarPrototype)
-    $(".precipBar:last-child").css({
-      "left": timePercent + "%",
-      "height": precipBarPercent + "%"
-      });
     
+    if (precipBarPercent > 0) {
+      $(".precipitationGraph").append(precipBarPrototype)
+      $(".precipBar:last-child").css({
+        "left": timePercent + "%",
+        "height": precipBarPercent + "%"
+      });
+    }  
   }
   
   // display high/low temperatures
@@ -119,7 +120,7 @@ var updateWeatherDisplay = function(data) {
   // display weather summary
   $('.summary').html(data.daily.data[forecastDay].summary);
   
-  if (precipType) {
+  if (precipProbability > 0) {
     $weatherElement.find('.precip').html(precipProbability + "% chance of " + precipType + ". ");
   } else {
     $weatherElement.find('.precip').html("");
@@ -137,10 +138,10 @@ $(document).ready(function(){
   displayTime();  
   setInterval(function() {
   	displayTime();
-  }, 1000);
+  }, 1000); // every second
 
   getWeatherJSON();
   setInterval(function() {
   	getWeatherJSON();
-  }, 3600000);
+  }, 3600000); // every hour
 });
