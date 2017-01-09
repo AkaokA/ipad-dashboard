@@ -83,7 +83,7 @@ body {
 .timeAndWeatherWidget {
   position: absolute;
   width: 100%;
-  padding: 0 $spacing-unit*2;
+  padding: 0 $spacing-unit;
   
   .timeDisplay {
     font-size: $huge-font-size;
