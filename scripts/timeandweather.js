@@ -89,7 +89,7 @@ var updateWeatherDisplay = function(data) {
   $(".precipBar").remove();
   
   //config variables
-  var hoursToDisplay = 12;
+  var hoursToDisplay = 18;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -20;
   var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
