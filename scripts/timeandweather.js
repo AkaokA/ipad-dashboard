@@ -89,7 +89,7 @@ var updateWeatherDisplay = function(data) {
   $(".precipBar").remove();
   
   //config variables
-  var hoursToDisplay = 18;
+  var hoursToDisplay = 24;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -20;
   var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
@@ -125,10 +125,23 @@ var updateWeatherDisplay = function(data) {
     })
     
     $(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature);
+    
+    // draw hours legend
+    if (hourlyForecastTime.getHours() % 6 == 0) {
+      var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
+      var hourLabelPrototype = "<div class='hourLabel'><div class='hourLabelText'>" + hourLabelText + "</div></div>"
+      $(".hoursLegend").append(hourLabelPrototype);
+      $(".hourLabel:last-child").css({
+        "left": timePercent + "%"
+      });
+    }
+    
   }
     
+/*
   $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
   $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
+*/
   
   // display weather summary
   $('.summary').html(data.hourly.summary);
