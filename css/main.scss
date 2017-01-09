@@ -104,13 +104,13 @@ body {
   .weatherDisplay {
     position: relative;
     width: 100%;
-    height: 240px;
+    height: 260px;
     margin-top: $spacing-unit * 2;
     margin-bottom: $base-font-size + $spacing-unit * 1;
     font-size: 0;
     border-top: 1px solid $grey-color-dark;
     border-bottom: 1px solid $grey-color-dark;
-    border-left: 2px solid $amber-color;
+//     border-left: 2px solid $amber-color;
     
     & > * {
       font-size: $base-font-size;
