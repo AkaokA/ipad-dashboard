@@ -15,6 +15,11 @@ var formatTime = function(time, showHours, showMinutes, showAMPM) {
       if (showAMPM) {
         ampm = "<span class='ampm'>PM</span>"
       }
+    } else if (time.getHours() == 12) {
+      hoursString = 12;
+      if (showAMPM) {
+        ampm = "<span class='ampm'>PM</span>"
+      }
     } else {
   	  if (time.getHours() == 0) {
   	  	hoursString = 12;
