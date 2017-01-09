@@ -51,6 +51,10 @@ var parseData = function(jsonData) {
 }
 
 var updateBusTable = function(predictionItemsArray) {
+  if (predictionItemsArray.size < itemsToDisplay) {
+    itemsToDisplay = predictionItemsArray.size;
+  }
+  
 	// Iterate through the XML
 	for (var i = 0; i < itemsToDisplay; i++) {
 		var predictionItem = predictionItemsArray[i];

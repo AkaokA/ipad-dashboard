@@ -80,60 +80,58 @@ var updateWeatherDisplay = function(data) {
   var dailyForecastData = data.daily.data;
   var hourlyForecastData = data.hourly.data;
 
-  var maxTemp = Math.round(dailyForecastData[forecastDay].apparentTemperatureMax);
-  var minTemp = Math.round(dailyForecastData[forecastDay].apparentTemperatureMin);
-  var maxTempTime = new Date(dailyForecastData[forecastDay].apparentTemperatureMaxTime * 1000);
-  var minTempTime = new Date(dailyForecastData[forecastDay].apparentTemperatureMinTime * 1000);
   var sunrise = new Date(dailyForecastData[forecastDay].sunriseTime * 1000);
   var sunset = new Date(dailyForecastData[forecastDay].sunsetTime * 1000);
   var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
   var precipType = dailyForecastData[forecastDay].precipType;
   
+  $(".temperatureMarker").remove();
   $(".precipBar").remove();
   
-  for (var hour = 0; hour < 24; hour++) {
-    var precipTime = new Date(hourlyForecastData[hour].time * 1000);
-    var timePercent = getTimePercent(precipTime);
+  //config variables
+  var hoursToDisplay = 12;
+  var temperatureUpperBound = 30;
+  var temperatureLowerBound = -20;
+  var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
+  
+  console.log(zeroPercent);
+  $(".midline").css("bottom", zeroPercent + "%" );
+  
+  for (var hour = 0; hour < hoursToDisplay; hour++) {
+    var hourlyForecastTime = new Date(hourlyForecastData[hour].time * 1000);
+    var timePercent = hour / hoursToDisplay * 100;
+    
+    // draw precipitation graph
     var precipBarPrototype = "<div class='precipBar'></div>"
     var precipBarPercent = hourlyForecastData[hour].precipProbability * 100;
-    
     if (precipBarPercent > 0) {
       $(".precipitationGraph").append(precipBarPrototype)
       $(".precipBar:last-child").css({
         "left": timePercent + "%",
-        "height": precipBarPercent + "%",
-        "opacity": 1.25 - hour/24
+        "height": precipBarPercent + "%"
       });
     }  
+
+    // draw temperature graph
+    var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='tempDot'></div></div>"
+    var hourlyTemperature = Math.round(hourlyForecastData[hour].apparentTemperature);
+//     hourlyTemperature = -20;
+    var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound) * 100;
+    $(".forecastGraph").append(temperatureMarkerPrototype);
+    
+    $(".temperatureMarker:last-child").css({
+      "left": timePercent + "%",
+      "bottom": temperaturePercent + "%"
+    })
+    
+    $(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature);
   }
-  
-  // display high/low temperatures
-  $('.highTemp').html(maxTemp + "&deg;");
-  $('.lowTemp').html(minTemp + "&deg;");
-  $('.highTempTime').html(formatTime(maxTempTime, true, false, true));
-  $('.lowTempTime').html(formatTime(minTempTime, true, false, true));
-  
+    
   $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
   $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
   
-  $('.tempDisplay.high').css("left", (maxTempTime.getHours() / 24 * 100) + "%");
-  $('.tempDisplay.low').css("left", (minTempTime.getHours() / 24 * 100) + "%");
-  
   // display weather summary
-  $('.summary').html(data.daily.data[forecastDay].summary);
-  
-  if (precipProbability > 0) {
-    $weatherElement.find('.precip').html(precipProbability + "% chance of " + precipType + ". ");
-  } else {
-    $weatherElement.find('.precip').html("");
-  }
-  
-  if (precipType == "rain") {
-    if (precipProbability >= 20) {
-      $(".precip").append("Consider your umbrella.")
-      $(".precip").addClass("umbrella");
-    }
-  }
+  $('.summary').html(data.hourly.summary);
 }
 
 $(document).ready(function(){
