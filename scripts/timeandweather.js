@@ -90,6 +90,7 @@ var updateWeatherDisplay = function(data) {
   var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
   var precipType = dailyForecastData[forecastDay].precipType;
   
+  $(".hourLabel").remove();
   $(".temperatureMarker").remove();
   $(".precipBar").remove();
   
@@ -103,6 +104,7 @@ var updateWeatherDisplay = function(data) {
   
   // show current temperature
   var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
+  $('.currentTemperature').html("");
   $(".currentTemperature").append(currentTemperature);
   
   var cachedTemperature = null;
