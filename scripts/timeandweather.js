@@ -99,8 +99,13 @@ var updateWeatherDisplay = function(data) {
   var temperatureLowerBound = -15;
   var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
   
-  console.log(zeroPercent);
   $(".midline").css("bottom", zeroPercent + "%" );
+  
+  // show current temperature
+  var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
+  $(".currentTemperature").append(currentTemperature);
+  
+  var cachedTemperature = null;
   
   for (var hour = 0; hour < hoursToDisplay; hour++) {
     var hourlyForecastTime = new Date(hourlyForecastData[hour].time * 1000);
@@ -108,7 +113,9 @@ var updateWeatherDisplay = function(data) {
     
     // draw precipitation graph
     var precipBarPrototype = "<div class='precipBar'></div>"
-    var precipBarPercent = hourlyForecastData[hour].precipProbability * 100;
+    var precipBarMax = 3;
+    var precipBarPercent = (hourlyForecastData[hour].precipIntensity / precipBarMax) * 100; // for precipitation amount
+    
     if (precipBarPercent > 0) {
       $(".precipitationGraph").append(precipBarPrototype)
       $(".precipBar:last-child").css({
@@ -129,8 +136,13 @@ var updateWeatherDisplay = function(data) {
       "bottom": temperaturePercent + "%"
     })
     
-    $(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature);
-    
+    if (hourlyTemperature != cachedTemperature) {
+	    cachedTemperature = hourlyTemperature
+			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
+    } else {
+	    $(".temperatureMarker:last-child .tempDot").addClass("small");
+    }
+        
     // draw hours legend
     if (hourlyForecastTime.getHours() % 6 == 0) {
       var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
