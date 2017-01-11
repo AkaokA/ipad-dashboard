@@ -2,6 +2,12 @@ var $dateElement = $(".timeDisplay");
 var $weatherElement = $(".weatherDisplay");
 var currentTime = new Date();
 
+// colors
+var blueColorTransparent = "rgba(0,118,255,0.5)";
+var greyColor       = "#A4AAB3";
+var greyColorDark   = "#444";
+var greyColorLight  = "#C7C7CD";
+
 var formatTime = function(time, showHours, showMinutes, showAMPM) {
   var timeDisplayString = "";
   var hoursString = time.getHours();
@@ -81,21 +87,30 @@ var getWeatherJSON = function() {
 
 var updateWeatherDisplay = function(data) {
   // set up canvases
-  var canvas = $(".forecastGraph")[0];
-  canvas.width = $(".weatherDisplay").width() * 2;
-  canvas.height = $(".weatherDisplay").height() * 2;
-
   var canvasWidth = $(".weatherDisplay").outerWidth();
-  var canvasHeight = $(".weatherDisplay").outerHeight();
+  var canvasHeight = $(".weatherDisplay").outerHeight() - 4;
 
-  canvas.style.width = canvasWidth + "px";
-  canvas.style.height = canvasHeight + "px";
+  var precipitationCanvas = $(".precipitationGraph")[0];
+  var forecastCanvas = $(".forecastGraph")[0];
   
+  precipitationCanvas.width = canvasWidth * 2;
+  precipitationCanvas.height = canvasHeight * 2;
+  forecastCanvas.width = canvasWidth * 2;
+  forecastCanvas.height = canvasHeight * 2;
+
+  precipitationCanvas.style.width = canvasWidth + "px";
+  precipitationCanvas.style.height = canvasHeight + "px";
+  forecastCanvas.style.width = canvasWidth + "px";
+  forecastCanvas.style.height = canvasHeight + "px";
   
-  var ctx = canvas.getContext('2d');
+  var precipitationCtx = precipitationCanvas.getContext('2d');
+  var forecastCtx = forecastCanvas.getContext('2d');
+  precipitationCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  forecastCtx.clearRect(0, 0, canvasWidth, canvasHeight);
   
   if (window.devicePixelRatio) {
-    ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    precipitationCtx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    forecastCtx.scale(window.devicePixelRatio,window.devicePixelRatio);
   }
   
   //config variables
@@ -103,6 +118,7 @@ var updateWeatherDisplay = function(data) {
   var precipBarWidth = 32;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -15;
+  var iconSize = 24;
 
   // get data
   var dailyForecastData = data.daily.data;
@@ -114,17 +130,20 @@ var updateWeatherDisplay = function(data) {
   
   // draw 0-degree line
   var zeroDegreePercent = 1 - (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound);
+  var zeroDegreeYPos = zeroDegreePercent * canvasHeight;
   
-  ctx.beginPath();
-  ctx.moveTo(0, zeroDegreePercent * canvasHeight);
-  ctx.lineTo(canvasWidth, zeroDegreePercent * canvasHeight);
-  ctx.closePath();
-  ctx.strokeStyle = "#444444";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-      
-//   var cachedTemperature;
+  forecastCtx.beginPath();
+  forecastCtx.moveTo(0, zeroDegreeYPos);
+  forecastCtx.lineTo(canvasWidth, zeroDegreePercent * canvasHeight);
+  forecastCtx.strokeStyle = greyColorDark;
+  forecastCtx.lineWidth = 2;
+  forecastCtx.stroke();
   
+  // begin drawing weather line
+  forecastCtx.beginPath();
+  
+  var icons = [];
+
   for (var hour = 0; hour < hoursToDisplay; hour++) {
     var hourlyForecastTime = new Date(hourlyForecastData[hour].time * 1000);
     var timePercent = hour / hoursToDisplay;
@@ -132,29 +151,34 @@ var updateWeatherDisplay = function(data) {
     
     // draw precipitation graph
     var precipBarMax = 4;
-    var precipBarPercent = 1 - (hourlyForecastData[hour].precipIntensity / precipBarMax); // for precipitation amount
-    var precipBarYPos = Math.floor(precipBarPercent * canvasHeight);
-    ctx.fillStyle = "rgba(0,118,255,0.5)";
+    var precipBarPercent = hourlyForecastData[hour].precipIntensity / precipBarMax; // for precipitation amount
+    var precipBarYPos = Math.floor((1 - precipBarPercent) * canvasHeight);
+    precipitationCtx.fillStyle = blueColorTransparent;
     
-    if (precipBarPercent < 1) {
-      roundTopRect(ctx, timeXPos, precipBarYPos, precipBarWidth, canvasHeight - precipBarYPos, 4, true, false);
+    if (precipBarPercent <= 1) {
+      roundTopRect(precipitationCtx, timeXPos, precipBarYPos, precipBarWidth, canvasHeight - precipBarYPos, 4, true, false);
     }  
 
     // draw temperature graph
-    var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='conditionImage'></div></div>"
     var hourlyTemperature = Math.round(hourlyForecastData[hour].apparentTemperature);
-    var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound) * 100;
-    $(".forecastGraph").append(temperatureMarkerPrototype);
+    var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound);
+    var temperatureYPos = Math.floor((1 - temperaturePercent) * canvasHeight);
     
-    $(".temperatureMarker:last-child").css({
-      "left": timePercent + "%",
-      "bottom": temperaturePercent + "%"
-    })
+    if (hour == 0) {
+      forecastCtx.moveTo(timeXPos + precipBarWidth/2, temperatureYPos);
+    } else {
+      forecastCtx.lineTo(timeXPos + precipBarWidth/2, temperatureYPos);
+    }
     
-    $(".temperatureMarker:last-child .conditionImage").css("background-image", "url(images/weather-" + hourlyForecastData[hour].icon + ".png)");
-        
-    // only show temperature when it changes
+    // draw condition icons
+    icons[hour] = new Image();
+    icons[hour].src = "images/weather-" + hourlyForecastData[hour].icon + ".png";
+    icons[hour].addEventListener("load", function() {
+      forecastCtx.drawImage(this, timeXPos + precipBarWidth/2 - iconSize/2, temperatureYPos - iconSize/2, iconSize, iconSize);
+    }, false);
+      
 /*
+    // only show temperature when it changes
     if (hourlyTemperature != cachedTemperature) {
 	    cachedTemperature = hourlyTemperature
 			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
@@ -162,19 +186,22 @@ var updateWeatherDisplay = function(data) {
 */
         
     // draw hours legend
-/*
-    if (hourlyForecastTime.getHours() % 6 == 0) {
+    if (hourlyForecastTime.getHours() % 3 == 0) {
       var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
       var hourLabelPrototype = "<div class='hourLabel'><div class='hourLabelText'>" + hourLabelText + "</div></div>"
       $(".hoursLegend").append(hourLabelPrototype);
       $(".hourLabel:last-child").css({
-        "left": timePercent + "%"
+        "left": timePercent * 100 + "%"
       });
     }
-*/
-    
   }
-    
+  
+  forecastCtx.strokeStyle = greyColorLight;
+  forecastCtx.lineCap = "round";
+  forecastCtx.lineJoin = "round";
+  forecastCtx.lineWidth = 4;
+  forecastCtx.stroke();
+  
 /*
   $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
   $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
@@ -221,8 +248,6 @@ function roundTopRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.stroke();
   }
 }
-
-
 
 $(document).ready(function(){
   displayTime();  
