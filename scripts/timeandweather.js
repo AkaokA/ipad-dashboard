@@ -156,7 +156,7 @@ var updateWeatherDisplay = function(data) {
     precipitationCtx.fillStyle = blueColorTransparent;
     
     if (precipBarPercent <= 1) {
-      roundTopRect(precipitationCtx, timeXPos, precipBarYPos, precipBarWidth, canvasHeight - precipBarYPos, 4, true, false);
+      drawRoundTopRect(precipitationCtx, timeXPos, precipBarYPos, precipBarWidth, canvasHeight - precipBarYPos, 4, true, false);
     }  
 
     // draw temperature graph
@@ -170,20 +170,14 @@ var updateWeatherDisplay = function(data) {
       forecastCtx.lineTo(timeXPos + precipBarWidth/2, temperatureYPos);
     }
     
-    // draw condition icons
+    // create and draw condition icons
     icons[hour] = new Image();
     icons[hour].src = "images/weather-" + hourlyForecastData[hour].icon + ".png";
-
     icons[hour].addEventListener("load", drawConditionIcon.bind(icons[hour], forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize), false);
-      
-/*
-    // only show temperature when it changes
-    if (hourlyTemperature != cachedTemperature) {
-	    cachedTemperature = hourlyTemperature
-			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
-    }
-*/
-        
+    
+    // TODO: draw temperature labels
+    
+    
     // draw hours legend
     if (hourlyForecastTime.getHours() % 3 == 0) {
       var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
@@ -195,16 +189,15 @@ var updateWeatherDisplay = function(data) {
     }
   }
   
+  // finish drawing temperature line
   forecastCtx.strokeStyle = greyColorLight;
   forecastCtx.lineCap = "round";
   forecastCtx.lineJoin = "round";
   forecastCtx.lineWidth = 4;
   forecastCtx.stroke();
-  
-/*
-  $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
-  $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
-*/
+
+  // TODO: draw daylight indicator
+
 
   // show current temperature
   $('.currentTemperature').html("");
@@ -214,12 +207,11 @@ var updateWeatherDisplay = function(data) {
   $('.summary').html(data.hourly.summary);
 }
 
-var drawConditionIcon = function(forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize) {
-  console.log(this);
-  forecastCtx.drawImage(this, timeXPos + precipBarWidth/2 - iconSize/2, temperatureYPos - iconSize/2, iconSize, iconSize);
+var drawConditionIcon = function(ctx, timeXPos, temperatureYPos, precipBarWidth, iconSize) {
+  ctx.drawImage(this, timeXPos + precipBarWidth/2 - iconSize/2, temperatureYPos - iconSize/2, iconSize, iconSize);
 }
 
-function roundTopRect(ctx, x, y, width, height, radius, fill, stroke) {
+var drawRoundTopRect = function(ctx, x, y, width, height, radius, fill, stroke) {
   if (typeof stroke == 'undefined') {
     stroke = true;
   }
