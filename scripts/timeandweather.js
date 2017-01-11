@@ -80,52 +80,64 @@ var getWeatherJSON = function() {
 }
 
 var updateWeatherDisplay = function(data) {
-  // get data
-  var forecastDay = 0; // set to '0' for today's forecast; change to debug
-  var dailyForecastData = data.daily.data;
-  var hourlyForecastData = data.hourly.data;
+  // set up canvases
+  var canvas = $(".forecastGraph")[0];
+  canvas.width = $(".weatherDisplay").width() * 2;
+  canvas.height = $(".weatherDisplay").height() * 2;
 
-  var sunrise = new Date(dailyForecastData[forecastDay].sunriseTime * 1000);
-  var sunset = new Date(dailyForecastData[forecastDay].sunsetTime * 1000);
-  var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
-  var precipType = dailyForecastData[forecastDay].precipType;
+  var canvasWidth = $(".weatherDisplay").outerWidth();
+  var canvasHeight = $(".weatherDisplay").outerHeight();
+
+  canvas.style.width = canvasWidth + "px";
+  canvas.style.height = canvasHeight + "px";
   
-  // clear all injected divs
-  $(".hourLabel").remove();
-  $(".temperatureMarker").remove();
-  $(".precipBar").remove();
+  
+  var ctx = canvas.getContext('2d');
+  
+  if (window.devicePixelRatio) {
+    ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+  }
   
   //config variables
   var hoursToDisplay = 18;
+  var precipBarWidth = 32;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -15;
+
+  // get data
+  var dailyForecastData = data.daily.data;
+  var hourlyForecastData = data.hourly.data;
+  var forecastDay = 0; // set to '0' for today's forecast; change to debug
+  var sunrise = new Date(dailyForecastData[forecastDay].sunriseTime * 1000);
+  var sunset = new Date(dailyForecastData[forecastDay].sunsetTime * 1000);
+  var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";  
   
-  // place 0-degree line
-  var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
-  $(".midline").css("bottom", zeroPercent + "%" );
+  // draw 0-degree line
+  var zeroDegreePercent = 1 - (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound);
   
-  // show current temperature
-  var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
-  $('.currentTemperature').html("");
-  $(".currentTemperature").append("Feels like " + currentTemperature);
-  
-  var cachedTemperature = null;
+  ctx.beginPath();
+  ctx.moveTo(0, zeroDegreePercent * canvasHeight);
+  ctx.lineTo(canvasWidth, zeroDegreePercent * canvasHeight);
+  ctx.closePath();
+  ctx.strokeStyle = "#444444";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+      
+//   var cachedTemperature;
   
   for (var hour = 0; hour < hoursToDisplay; hour++) {
     var hourlyForecastTime = new Date(hourlyForecastData[hour].time * 1000);
-    var timePercent = hour / hoursToDisplay * 100;
+    var timePercent = hour / hoursToDisplay;
+    var timeXPos = Math.round(timePercent * canvasWidth);
     
     // draw precipitation graph
-    var precipBarPrototype = "<div class='precipBar'></div>"
     var precipBarMax = 4;
-    var precipBarPercent = (hourlyForecastData[hour].precipIntensity / precipBarMax) * 100; // for precipitation amount
+    var precipBarPercent = 1 - (hourlyForecastData[hour].precipIntensity / precipBarMax); // for precipitation amount
+    var precipBarYPos = Math.floor(precipBarPercent * canvasHeight);
+    ctx.fillStyle = "rgba(0,118,255,0.5)";
     
-    if (precipBarPercent > 0) {
-      $(".precipitationGraph").append(precipBarPrototype)
-      $(".precipBar:last-child").css({
-        "left": timePercent + "%",
-        "height": precipBarPercent + "%"
-      });
+    if (precipBarPercent < 1) {
+      roundTopRect(ctx, timeXPos, precipBarYPos, precipBarWidth, canvasHeight - precipBarYPos, 4, true, false);
     }  
 
     // draw temperature graph
@@ -142,12 +154,15 @@ var updateWeatherDisplay = function(data) {
     $(".temperatureMarker:last-child .conditionImage").css("background-image", "url(images/weather-" + hourlyForecastData[hour].icon + ".png)");
         
     // only show temperature when it changes
+/*
     if (hourlyTemperature != cachedTemperature) {
 	    cachedTemperature = hourlyTemperature
 			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
     }
+*/
         
     // draw hours legend
+/*
     if (hourlyForecastTime.getHours() % 6 == 0) {
       var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
       var hourLabelPrototype = "<div class='hourLabel'><div class='hourLabelText'>" + hourLabelText + "</div></div>"
@@ -156,6 +171,7 @@ var updateWeatherDisplay = function(data) {
         "left": timePercent + "%"
       });
     }
+*/
     
   }
     
@@ -163,10 +179,50 @@ var updateWeatherDisplay = function(data) {
   $('.daylightIndicator').css("left", getTimePercent(sunrise) + "%");
   $('.daylightIndicator').css("right", 100 - getTimePercent(sunset) + "%");
 */
-  
+
+  // show current temperature
+  $('.currentTemperature').html("");
+  $(".currentTemperature").append("Feels like " + currentTemperature);
+
   // display weather summary
   $('.summary').html(data.hourly.summary);
 }
+
+function roundTopRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke == 'undefined') {
+    stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = {tl: radius, tr: radius, br: 0, bl: 0}; // remove radius for bottom corners
+  } else {
+    var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+}
+
+
 
 $(document).ready(function(){
   displayTime();  

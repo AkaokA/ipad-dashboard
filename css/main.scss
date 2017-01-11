@@ -99,18 +99,17 @@ body {
     }
   }
   
+  $weatherDisplayHeight: 220px;
   $barWidth: 32px;
   
   .weatherDisplay {
     position: relative;
     width: 100%;
-    height: 220px;
+    height: $weatherDisplayHeight;
     margin-top: 0;
     margin-bottom: $base-font-size + $spacing-unit * 1;
     font-size: 0;
-//     border-top: 1px solid $grey-color-dark;
     border-bottom: 1px solid $grey-color-dark;
-//     border-left: 2px solid $amber-color;
     
     & > * {
       font-size: $base-font-size;
@@ -148,11 +147,7 @@ body {
       
     .forecastGraph, .precipitationGraph {
       position: absolute;
-      width: 100%;
-      top: 0;
-      bottom: 4px;
     }
-    
     
     .forecastGraph {
       .temperatureMarker {
