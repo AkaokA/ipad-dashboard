@@ -173,9 +173,8 @@ var updateWeatherDisplay = function(data) {
     // draw condition icons
     icons[hour] = new Image();
     icons[hour].src = "images/weather-" + hourlyForecastData[hour].icon + ".png";
-    icons[hour].addEventListener("load", function() {
-      forecastCtx.drawImage(this, timeXPos + precipBarWidth/2 - iconSize/2, temperatureYPos - iconSize/2, iconSize, iconSize);
-    }, false);
+
+    icons[hour].addEventListener("load", drawConditionIcon.bind(icons[hour], forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize), false);
       
 /*
     // only show temperature when it changes
@@ -213,6 +212,11 @@ var updateWeatherDisplay = function(data) {
 
   // display weather summary
   $('.summary').html(data.hourly.summary);
+}
+
+var drawConditionIcon = function(forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize) {
+  console.log(this);
+  forecastCtx.drawImage(this, timeXPos + precipBarWidth/2 - iconSize/2, temperatureYPos - iconSize/2, iconSize, iconSize);
 }
 
 function roundTopRect(ctx, x, y, width, height, radius, fill, stroke) {
