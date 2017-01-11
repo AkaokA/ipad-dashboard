@@ -105,7 +105,7 @@ var updateWeatherDisplay = function(data) {
   // show current temperature
   var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
   $('.currentTemperature').html("");
-  $(".currentTemperature").append(currentTemperature);
+  $(".currentTemperature").append("Feels like " + currentTemperature);
   
   var cachedTemperature = null;
   
