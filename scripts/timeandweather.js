@@ -90,16 +90,18 @@ var updateWeatherDisplay = function(data) {
   var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
   var precipType = dailyForecastData[forecastDay].precipType;
   
+  // clear all injected divs
   $(".hourLabel").remove();
   $(".temperatureMarker").remove();
   $(".precipBar").remove();
   
   //config variables
-  var hoursToDisplay = 24;
+  var hoursToDisplay = 18;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -15;
-  var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
   
+  // place 0-degree line
+  var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
   $(".midline").css("bottom", zeroPercent + "%" );
   
   // show current temperature
@@ -115,7 +117,7 @@ var updateWeatherDisplay = function(data) {
     
     // draw precipitation graph
     var precipBarPrototype = "<div class='precipBar'></div>"
-    var precipBarMax = 3;
+    var precipBarMax = 4;
     var precipBarPercent = (hourlyForecastData[hour].precipIntensity / precipBarMax) * 100; // for precipitation amount
     
     if (precipBarPercent > 0) {
@@ -127,9 +129,8 @@ var updateWeatherDisplay = function(data) {
     }  
 
     // draw temperature graph
-    var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='tempDot'></div></div>"
+    var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='conditionImage'></div></div>"
     var hourlyTemperature = Math.round(hourlyForecastData[hour].apparentTemperature);
-//     hourlyTemperature = -20;
     var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound) * 100;
     $(".forecastGraph").append(temperatureMarkerPrototype);
     
@@ -138,11 +139,12 @@ var updateWeatherDisplay = function(data) {
       "bottom": temperaturePercent + "%"
     })
     
+    $(".temperatureMarker:last-child .conditionImage").css("background-image", "url(images/weather-" + hourlyForecastData[hour].icon + ".png)");
+        
+    // only show temperature when it changes
     if (hourlyTemperature != cachedTemperature) {
 	    cachedTemperature = hourlyTemperature
 			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
-    } else {
-	    $(".temperatureMarker:last-child .tempDot").addClass("small");
     }
         
     // draw hours legend
