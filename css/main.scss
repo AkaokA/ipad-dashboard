@@ -31,7 +31,6 @@ $grey-color-dark:				  #444;
 
 // Width of the content area
 $content-width:   960px;
-
 $tableRowHeight:  100px;
 
 
@@ -125,6 +124,8 @@ body {
           
     .forecastGraph, .precipitationGraph {
       position: absolute;
+      width: 100%;
+      height: $weatherDisplayHeight;
     }
   }
   
@@ -137,7 +138,7 @@ body {
 
     .hourLabel {
       position: absolute;
-      width: $barWidth;
+      width: 24px;
       height: 100%;
       overflow: visible;
       
@@ -155,13 +156,6 @@ body {
   .weatherDescription {
     .summary {
       
-    }
-    
-    .precip {
-      &.umbrella {
-        font-weight: 600;
-        color: $blue-color;
-      }
     }
   }
 }

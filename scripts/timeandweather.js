@@ -85,40 +85,52 @@ var getWeatherJSON = function() {
   });	
 }
 
-var updateWeatherDisplay = function(data) {
+var canvasBottomMargin = 4;
+var canvasWidth = $(".weatherDisplay").outerWidth();
+var canvasHeight = $(".weatherDisplay").outerHeight() - canvasBottomMargin;
+
+var setupCanvas = function($canvasElement) {
   // set up canvases
-  var canvasWidth = $(".weatherDisplay").outerWidth();
-  var canvasHeight = $(".weatherDisplay").outerHeight() - 4;
-
-  var precipitationCanvas = $(".precipitationGraph")[0];
-  var forecastCanvas = $(".forecastGraph")[0];
+  var canvas = $canvasElement[0];
+  var ctx = canvas.getContext('2d');
   
-  precipitationCanvas.width = canvasWidth * 2;
-  precipitationCanvas.height = canvasHeight * 2;
-  forecastCanvas.width = canvasWidth * 2;
-  forecastCanvas.height = canvasHeight * 2;
-
-  precipitationCanvas.style.width = canvasWidth + "px";
-  precipitationCanvas.style.height = canvasHeight + "px";
-  forecastCanvas.style.width = canvasWidth + "px";
-  forecastCanvas.style.height = canvasHeight + "px";
-  
-  var precipitationCtx = precipitationCanvas.getContext('2d');
-  var forecastCtx = forecastCanvas.getContext('2d');
-  precipitationCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-  forecastCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-  
+  // retina support
   if (window.devicePixelRatio) {
-    precipitationCtx.scale(window.devicePixelRatio,window.devicePixelRatio);
-    forecastCtx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    scaleFactor = window.devicePixelRatio;
+  } else {
+    scaleFactor = 1;
   }
   
+  // scaleFactor = 1; // override scale factor
+  
+  // increase dimensions of canvas if retina
+  canvas.width = canvasWidth * scaleFactor;
+  canvas.height = canvasHeight * scaleFactor;  
+  
+  // set size of canvas to the intended size
+  canvas.style.width = canvasWidth + "px";
+  canvas.style.height = canvasHeight + "px";  
+  
+  // scale canvas contents to fit actual size
+  ctx.scale(scaleFactor,scaleFactor);
+  
+  return ctx;
+}
+
+var updateWeatherDisplay = function(data) {
   //config variables
   var hoursToDisplay = 18;
   var precipBarWidth = 32;
   var temperatureUpperBound = 30;
   var temperatureLowerBound = -15;
   var iconSize = 24;
+  
+  var precipitationCtx = setupCanvas( $(".precipitationGraph") );
+  var forecastCtx = setupCanvas( $(".forecastGraph") );
+  
+  // clear the graphs before drawing
+  precipitationCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  forecastCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
   // get data
   var dailyForecastData = data.daily.data;
@@ -131,7 +143,6 @@ var updateWeatherDisplay = function(data) {
   // draw 0-degree line
   var zeroDegreePercent = 1 - (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound);
   var zeroDegreeYPos = zeroDegreePercent * canvasHeight;
-  
   forecastCtx.beginPath();
   forecastCtx.moveTo(0, zeroDegreeYPos);
   forecastCtx.lineTo(canvasWidth, zeroDegreePercent * canvasHeight);
@@ -139,7 +150,7 @@ var updateWeatherDisplay = function(data) {
   forecastCtx.lineWidth = 2;
   forecastCtx.stroke();
   
-  // begin drawing weather line
+  // begin drawing temperature line
   forecastCtx.beginPath();
   
   var icons = [];
@@ -176,7 +187,10 @@ var updateWeatherDisplay = function(data) {
     icons[hour].addEventListener("load", drawConditionIcon.bind(icons[hour], forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize), false);
     
     // TODO: draw temperature labels
-    
+    forecastCtx.font = '24px adelle-sans-1';
+    forecastCtx.textAlign = "center";
+    forecastCtx.fillStyle = "#ffffff";
+    forecastCtx.fillText(hourlyTemperature, timeXPos + precipBarWidth/2, temperatureYPos - 20);
     
     // draw hours legend
     if (hourlyForecastTime.getHours() % 3 == 0) {
