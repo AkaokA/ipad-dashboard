@@ -1,12 +1,9 @@
-var $dateElement = $(".timeDisplay");
-var $weatherElement = $(".weatherDisplay");
-var currentTime = new Date();
 
 // colors
-var blueColorTransparent = "rgba(0,118,255,0.5)";
-var greyColor       = "#A4AAB3";
-var greyColorDark   = "#444";
-var greyColorLight  = "#C7C7CD";
+var blueColorTransparent  = "rgba(0,118,255,0.5)";
+var greyColor             = "#A4AAB3";
+var greyColorDark         = "#444";
+var greyColorLight        = "#C7C7CD";
 
 var formatTime = function(time, showHours, showMinutes, showAMPM) {
   var timeDisplayString = "";
@@ -62,8 +59,9 @@ var getTimePercent = function(time) {
 }
 
 var displayTime = function() {
-  currentTime = new Date();
-	$dateElement.html(formatTime(currentTime, true, true, true));
+  var dateElement = $(".timeDisplay");
+  var currentTime = new Date();
+	dateElement.html(formatTime(currentTime, true, true, true));
 	
 	// position current time marker in forecast graph
 	var currentTimePercent = getTimePercent(currentTime);
@@ -86,12 +84,13 @@ var getWeatherJSON = function() {
 }
 
 var canvasBottomMargin = 4;
-var canvasWidth = $(".weatherDisplay").outerWidth();
-var canvasHeight = $(".weatherDisplay").outerHeight() - canvasBottomMargin;
+var canvasContainerElement = $(".weatherDisplay");
+var canvasWidth = canvasContainerElement.outerWidth();
+var canvasHeight = canvasContainerElement.outerHeight() - canvasBottomMargin;
 
-var setupCanvas = function($canvasElement) {
+var setupCanvas = function(canvasElement) {
   // set up canvases
-  var canvas = $canvasElement[0];
+  var canvas = canvasElement[0];
   var ctx = canvas.getContext('2d');
   
   // retina support
@@ -124,8 +123,8 @@ var updateWeatherDisplay = function(data) {
   //config variables
   var hoursToDisplay = 18;
   var precipBarWidth = 32;
-  var temperatureUpperBound = 30;
-  var temperatureLowerBound = -15;
+  var temperatureUpperBound = 40;
+  var temperatureLowerBound = -20;
   var iconSize = 24;
   
   var precipitationCtx = setupCanvas( $(".precipitationGraph") );
@@ -160,8 +159,8 @@ var updateWeatherDisplay = function(data) {
     var timeXPos = Math.round(timePercent * canvasWidth);
     
     // draw precipitation graph
-    var precipBarMax = 4;
-    var precipBarPercent = hourlyForecastData[hour].precipIntensity / precipBarMax; // for precipitation amount
+    var precipBarMaxValue = 4;
+    var precipBarPercent = hourlyForecastData[hour].precipIntensity / precipBarMaxValue; // for precipitation amount
     var precipBarYPos = Math.floor((1 - precipBarPercent) * canvasHeight);
     precipitationCtx.fillStyle = blueColorTransparent;
     
@@ -185,10 +184,10 @@ var updateWeatherDisplay = function(data) {
     icons[hour].src = "images/weather-" + hourlyForecastData[hour].icon + ".png";
     icons[hour].addEventListener("load", drawConditionIcon.bind(icons[hour], forecastCtx, timeXPos, temperatureYPos, precipBarWidth, iconSize), false);
     
-    // TODO: draw temperature labels
+    // draw temperature labels
     forecastCtx.font = '24px adelle-sans-1';
     forecastCtx.textAlign = "center";
-    forecastCtx.fillStyle = "#ffffff";
+    forecastCtx.fillStyle = greyColorLight;
     forecastCtx.fillText(hourlyTemperature, timeXPos + precipBarWidth/2, temperatureYPos - 20);
     
     // draw hours legend
@@ -203,7 +202,7 @@ var updateWeatherDisplay = function(data) {
   }
   
   // finish drawing temperature line
-  forecastCtx.strokeStyle = greyColorLight;
+  forecastCtx.strokeStyle = greyColor;
   forecastCtx.lineCap = "round";
   forecastCtx.lineJoin = "round";
   forecastCtx.lineWidth = 4;
@@ -213,7 +212,7 @@ var updateWeatherDisplay = function(data) {
 
 
   // show current temperature
-  $('.currentTemperature').html("");
+  $(".currentTemperature").html("");
   $(".currentTemperature").append("Feels like " + currentTemperature);
 
   // display weather summary
