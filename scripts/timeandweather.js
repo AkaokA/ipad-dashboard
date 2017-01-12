@@ -114,6 +114,9 @@ var setupCanvas = function($canvasElement) {
   // scale canvas contents to fit actual size
   ctx.scale(scaleFactor,scaleFactor);
   
+  // clear the graphs before drawing
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
   return ctx;
 }
 
@@ -128,10 +131,6 @@ var updateWeatherDisplay = function(data) {
   var precipitationCtx = setupCanvas( $(".precipitationGraph") );
   var forecastCtx = setupCanvas( $(".forecastGraph") );
   
-  // clear the graphs before drawing
-  precipitationCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-  forecastCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-
   // get data
   var dailyForecastData = data.daily.data;
   var hourlyForecastData = data.hourly.data;
