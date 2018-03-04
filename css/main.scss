@@ -4,9 +4,11 @@
 @charset "utf-8";
 
 // Our variables
-$base-font-family: "adelle-sans-1", "adelle-sans-2", Helvetica, Arial, sans-serif;
-$base-font-size:   				24px;
-$base-line-height: 				1.5;
+$font-stack: Helvetica, Arial, sans-serif;
+$base-font-family: "adelle-sans-1", "adelle-sans-2", $font-stack;
+$industry-font-family: "industry-inc-base-1","industry-inc-base-2", $font-stack;
+$base-font-size:   				32px;
+$base-line-height: 				1.4;
 
 $small-font-size:         $base-font-size * 0.75;
 $large-font-size:         $base-font-size * 2;
@@ -79,46 +81,86 @@ body {
   @extend %clearfix;
 }
 
-.currentTemperature {
-  position: relative;
-  top: 0;
-  left: 0;
-  font-size: $large-font-size;
-  color: $grey-color-light;
-  background-color: rgba(0,0,0,0.5);
-}
-    
 .timeAndWeatherWidget {
   position: absolute;
-  width: 100%;
-  padding: 0 $spacing-unit*2;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+  
+  padding: $spacing-unit;
   
   .timeDisplay {
+	  position: relative;
+	  height: 240px;
     font-size: $huge-font-size;
     font-weight: 100;
     line-height: 1;
     margin: $spacing-unit*2 0;
-    margin-left: - 5px;
+    margin-left: -0.05em;
+	  
+	  .timeDisplayBase,
+	  .timeDisplayOverlay {
+		  position: absolute;
+	  }
+	  
+	  .timeDisplayBase {
+		  font-family: "industry-inc-3d-1","industry-inc-3d-2", $font-stack;
+		  color: $grey-color-dark;
+	  }
+	  .timeDisplayOverlay {
+		  font-family: $industry-font-family;
+		  color: $text-color;
+	  }
     
     .ampm {
+	    font-family: $industry-font-family;
       font-size: $large-font-size;
+      color: $grey-color-dark;
       font-weight: 600;
       margin-left: 0.5em;
     }
   }
   
+	.temperatureSummary {
+		position: relative;
+		width: 100%;
+		font-family: $industry-font-family;
+// 		text-align: center;
+		
+		.currentTemperature {
+			font-size: $large-font-size;
+			color: $text-color;
+	    margin-top: 0.15em;
+		}
+		.highTemperature {
+			color: $amber-color;
+		}
+		.lowTemperature {
+			color: $blue-color;
+		}
+		
+		.tempLabel,
+		.tempValue {
+		}
+		
+		.tempLabel {
+		}
+		.tempValue {
+		}
+	}
+    
   $barWidth: 32px;
   
   .weatherDisplay {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    margin-top: $spacing-unit * 4;
-    margin-bottom: $base-font-size + $spacing-unit * 1;
+    position: absolute;
+    height: 360px;
+    left: $spacing-unit;
+    right: $spacing-unit;
+    bottom: 0;
+    margin-bottom: $base-font-size*4 + $spacing-unit;
     font-size: 0;
-//     border-top: 1px solid $grey-color-dark;
     border-bottom: 1px solid $grey-color-dark;
-//     border-left: 2px solid $amber-color;
     
     & > * {
       font-size: $base-font-size;
@@ -131,27 +173,13 @@ body {
       height: 1px;
       background-color: $grey-color-dark;        
     }
-    
-/*
-    .daylightIndicator {
-      position: absolute;
-      -webkit-transform: translateY(-50%);
-      height: 2px;
-      background-color: $grey-color;
-      box-sizing: content-box;
-      border-left: 4px solid $background-color;
-      border-right: 4px solid $background-color;
-      border-radius: 4px;
-    }
-*/
-      
+          
     .forecastGraph, .precipitationGraph {
       position: absolute;
       width: 100%;
       top: 0;
       bottom: 4px;
     }
-    
     
     .forecastGraph {
       .temperatureMarker {
@@ -179,6 +207,7 @@ body {
           position: absolute;
           bottom: 0px;
           left: 50%;
+          font-family: "industry-inc-inline-stroke-1","industry-inc-inline-stroke-2", $font-stack;
           font-size: $small-font-size;
           font-weight: 600;
           -webkit-transform: translate(-50%, -50%);
@@ -206,6 +235,7 @@ body {
     height: $small-font-size * 1.5;
     top: 100%;
     left: 0;
+    font-family: "industry-inc-inline-stroke-1","industry-inc-inline-stroke-2", $font-stack;
 
     .hourLabel {
       position: absolute;
@@ -219,14 +249,19 @@ body {
         left: 50%;
         -webkit-transform: translateX(-50%);
         font-size: $small-font-size;
-        color: $grey-color;
       }
     }
   }
   
   .weatherDescription {
+	  position: absolute;
+	  width: 100%;
+	  bottom: 0;
+	  margin-bottom: $spacing-unit;
+	  
     .summary {
-      
+      font-family: $industry-font-family;
+      color: $grey-color;
     }
     
     .precip {
@@ -238,6 +273,7 @@ body {
   }
 }
 
+/*
 .nextBusWidget {
 	position: absolute;
 	width: 100%;
@@ -318,4 +354,5 @@ body {
   }
 
 }
+*/
 

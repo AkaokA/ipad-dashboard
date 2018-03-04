@@ -57,7 +57,8 @@ var getTimePercent = function(time) {
 
 var displayTime = function() {
   currentTime = new Date();
-	$dateElement.html(formatTime(currentTime, true, true, true));
+  var timeString = formatTime(currentTime, true, true, true);
+	$dateElement.html("<span class='timeDisplayBase'>" + timeString + "</span><span class='timeDisplayOverlay'>" + timeString + "</span>");
 	
 	// position current time marker in forecast graph
 	var currentTimePercent = getTimePercent(currentTime);
@@ -131,9 +132,16 @@ var updateWeatherDisplay = function(data) {
   $(".midline").css("bottom", zeroPercent + "%" );
   
   // show current temperature
-  var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
-  $('.currentTemperature').html("");
-  $(".currentTemperature").append(currentTemperature + " right now");
+  var currentTemperature = "<span class='tempValue'>" + Math.round(data.currently.apparentTemperature) + "&deg;</span>";
+  $(".currentTemperature").html("");
+  $(".currentTemperature").append("<span class='tempLabel'>now </span>" + currentTemperature);
+  var highTemperature = "<span class='tempValue'>" + Math.round(maxTemp) + "&deg;</span>";
+  $(".highTemperature").html("");
+  $(".highTemperature").append("<span class='tempLabel'>high </span>" + highTemperature);
+  var lowTemperature = "<span class='tempValue'>" + Math.round(minTemp) + "&deg;</span>";
+  $(".lowTemperature").html("");
+  $(".lowTemperature").append("<span class='tempLabel'>low </span>" + lowTemperature);
+	
   
   var cachedTemperature = null;
   
