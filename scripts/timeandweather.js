@@ -43,7 +43,7 @@ var formatTime = function(time, showHours, showMinutes, showAMPM) {
     
   // assemble string
   if (showHours && showMinutes) {
-    timeDisplayString = hoursString + ":" + minutesString + ampm;
+    timeDisplayString = hoursString + "<span class='colon'>:</span>" + minutesString + ampm;
   } else {
     timeDisplayString = hoursString + minutesString + ampm;
   }
@@ -116,7 +116,7 @@ var updateWeatherDisplay = function(data) {
 		  minTemp = thisTemp;
 	  }
 		
-		if (index > hoursToDisplay) {
+		if (index >= hoursToDisplay) {
 			return false;
 		}
   })
@@ -131,7 +131,7 @@ var updateWeatherDisplay = function(data) {
   var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
   $(".midline").css("bottom", zeroPercent + "%" );
   
-  // show current temperature
+  // show current/high/low temperature
   var currentTemperature = "<span class='tempValue'>" + Math.round(data.currently.temperature) + "&deg;</span>";
   $(".currentTemperature").html("");
   $(".currentTemperature").append("<span class='tempLabel'>now </span>" + currentTemperature);
