@@ -89,16 +89,42 @@ var updateWeatherDisplay = function(data) {
   var sunset = new Date(dailyForecastData[forecastDay].sunsetTime * 1000);
   var precipProbability = Math.round(dailyForecastData[forecastDay].precipProbability * 100);
   var precipType = dailyForecastData[forecastDay].precipType;
+
+  var hoursToDisplay = 18;
   
   // clear all injected divs
   $(".hourLabel").remove();
   $(".temperatureMarker").remove();
   $(".precipBar").remove();
   
+  // get max and min temperatures
+  var maxTemp = null;
+  var minTemp = null
+  $.each(hourlyForecastData, function(index, value) {
+	  thisTemp = Math.round(value.apparentTemperature);
+	  
+	  if (maxTemp == null) {
+		  maxTemp = thisTemp;
+	  } else if (value.apparentTemperature > maxTemp) {
+		  maxTemp = thisTemp;
+	  }
+	  
+		if (minTemp == null) {
+		  minTemp = thisTemp;
+	  } else if (value.apparentTemperature < minTemp) {
+		  minTemp = thisTemp;
+	  }
+		
+		if (index > hoursToDisplay) {
+			return false;
+		}
+  })
+  console.log(minTemp, maxTemp);
+  
   //config variables
-  var hoursToDisplay = 18;
-  var temperatureUpperBound = 30;
-  var temperatureLowerBound = -15;
+  var tempRange = maxTemp - minTemp;
+  var temperatureUpperBound = maxTemp + tempRange;
+  var temperatureLowerBound = minTemp - tempRange;
   
   // place 0-degree line
   var zeroPercent = (0 - temperatureLowerBound) / (temperatureUpperBound - temperatureLowerBound) * 100;
@@ -107,7 +133,7 @@ var updateWeatherDisplay = function(data) {
   // show current temperature
   var currentTemperature = Math.round(data.currently.apparentTemperature) + "&deg;";
   $('.currentTemperature').html("");
-  $(".currentTemperature").append("Feels like " + currentTemperature);
+  $(".currentTemperature").append(currentTemperature + " right now");
   
   var cachedTemperature = null;
   
@@ -130,7 +156,7 @@ var updateWeatherDisplay = function(data) {
 
     // draw temperature graph
     var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='conditionImage'></div></div>"
-    var hourlyTemperature = Math.round(hourlyForecastData[hour].apparentTemperature);
+    var hourlyTemperature = hourlyForecastData[hour].apparentTemperature;
     var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound) * 100;
     $(".forecastGraph").append(temperatureMarkerPrototype);
     
@@ -142,9 +168,9 @@ var updateWeatherDisplay = function(data) {
     $(".temperatureMarker:last-child .conditionImage").css("background-image", "url(images/weather-" + hourlyForecastData[hour].icon + ".png)");
         
     // only show temperature when it changes
-    if (hourlyTemperature != cachedTemperature) {
-	    cachedTemperature = hourlyTemperature
-			$(".temperatureMarker:last-child .tempLabel").append(hourlyTemperature + "&deg;");
+    if (Math.round(hourlyTemperature) != cachedTemperature) {
+	    cachedTemperature = Math.round(hourlyTemperature)
+			$(".temperatureMarker:last-child .tempLabel").append(Math.round(hourlyTemperature) + "&deg;");
     }
         
     // draw hours legend
