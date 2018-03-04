@@ -88,7 +88,7 @@ body {
 	left: 0;
 	right: 0;
   
-  padding: $spacing-unit;
+  padding: $spacing-unit/2;
   
   .timeDisplay {
 	  position: relative;
@@ -155,8 +155,8 @@ body {
   .weatherDisplay {
     position: absolute;
     height: 360px;
-    left: $spacing-unit;
-    right: $spacing-unit;
+    left: $spacing-unit/2;
+    right: $spacing-unit/2;
     bottom: 0;
     margin-bottom: $base-font-size*4 + $spacing-unit;
     font-size: 0;
@@ -224,7 +224,6 @@ body {
         bottom: 0;
         background-color: $blue-color;
         -webkit-border-radius: 4px 4px 0 0;
-        opacity: 0.5;
       }
     }  
   }
@@ -235,7 +234,8 @@ body {
     height: $small-font-size * 1.5;
     top: 100%;
     left: 0;
-    font-family: "industry-inc-inline-stroke-1","industry-inc-inline-stroke-2", $font-stack;
+    font-family: $industry-font-family;
+    color: $grey-color-dark;
 
     .hourLabel {
       position: absolute;
@@ -248,7 +248,7 @@ body {
         text-align: center;
         left: 50%;
         -webkit-transform: translateX(-50%);
-        font-size: $small-font-size;
+        font-size: $base-font-size;
       }
     }
   }

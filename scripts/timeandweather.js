@@ -102,17 +102,17 @@ var updateWeatherDisplay = function(data) {
   var maxTemp = null;
   var minTemp = null
   $.each(hourlyForecastData, function(index, value) {
-	  thisTemp = Math.round(value.apparentTemperature);
+	  thisTemp = Math.round(value.temperature);
 	  
 	  if (maxTemp == null) {
 		  maxTemp = thisTemp;
-	  } else if (value.apparentTemperature > maxTemp) {
+	  } else if (value.temperature > maxTemp) {
 		  maxTemp = thisTemp;
 	  }
 	  
 		if (minTemp == null) {
 		  minTemp = thisTemp;
-	  } else if (value.apparentTemperature < minTemp) {
+	  } else if (value.temperature < minTemp) {
 		  minTemp = thisTemp;
 	  }
 		
@@ -132,7 +132,7 @@ var updateWeatherDisplay = function(data) {
   $(".midline").css("bottom", zeroPercent + "%" );
   
   // show current temperature
-  var currentTemperature = "<span class='tempValue'>" + Math.round(data.currently.apparentTemperature) + "&deg;</span>";
+  var currentTemperature = "<span class='tempValue'>" + Math.round(data.currently.temperature) + "&deg;</span>";
   $(".currentTemperature").html("");
   $(".currentTemperature").append("<span class='tempLabel'>now </span>" + currentTemperature);
   var highTemperature = "<span class='tempValue'>" + Math.round(maxTemp) + "&deg;</span>";
@@ -164,7 +164,7 @@ var updateWeatherDisplay = function(data) {
 
     // draw temperature graph
     var temperatureMarkerPrototype = "<div class='temperatureMarker'><div class='tempLabel'></div><div class='conditionImage'></div></div>"
-    var hourlyTemperature = hourlyForecastData[hour].apparentTemperature;
+    var hourlyTemperature = hourlyForecastData[hour].temperature;
     var temperaturePercent = (0 - temperatureLowerBound + hourlyTemperature) / (temperatureUpperBound - temperatureLowerBound) * 100;
     $(".forecastGraph").append(temperatureMarkerPrototype);
     
@@ -178,12 +178,12 @@ var updateWeatherDisplay = function(data) {
     // only show temperature when it changes
     if (Math.round(hourlyTemperature) != cachedTemperature) {
 	    cachedTemperature = Math.round(hourlyTemperature)
-			$(".temperatureMarker:last-child .tempLabel").append(Math.round(hourlyTemperature) + "&deg;");
+			$(".temperatureMarker:last-child .tempLabel").append(Math.round(hourlyTemperature));
     }
         
     // draw hours legend
     if (hourlyForecastTime.getHours() % 6 == 0) {
-      var hourLabelText = formatTime(hourlyForecastTime, true, false, true);
+      var hourLabelText = formatTime(hourlyForecastTime, true, true, false);
       var hourLabelPrototype = "<div class='hourLabel'><div class='hourLabelText'>" + hourLabelText + "</div></div>"
       $(".hoursLegend").append(hourLabelPrototype);
       $(".hourLabel:last-child").css({
