@@ -103,6 +103,10 @@ var updateWeatherDisplay = function(data) {
   var minTemp = null
   $.each(hourlyForecastData, function(index, value) {
 	  thisTemp = Math.round(value.temperature);
+
+		if (index >= hoursToDisplay) {
+			return false;
+		}
 	  
 	  if (maxTemp == null) {
 		  maxTemp = thisTemp;
@@ -116,9 +120,6 @@ var updateWeatherDisplay = function(data) {
 		  minTemp = thisTemp;
 	  }
 		
-		if (index >= hoursToDisplay) {
-			return false;
-		}
   })
   console.log(minTemp, maxTemp);
   
